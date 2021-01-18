@@ -1,0 +1,98 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven {
+			url = "https://repo.spongepowered.org/maven"
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+	}
+}
+
+configurations {
+	includeMod
+	shade
+	shadeClient
+	serverLib
+	buildDep
+	compile.extendsFrom buildDep, shade, shadeClient, serverLib
+}
+
+repositories {
+	flatDir {
+		dirs 'lib'
+	}
+	maven {
+		name = "sponge"
+		url = "http://repo.spongepowered.org/maven/"
+	}
+}
+
+apply plugin: 'forge'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+version = "1.0"
+group= "ic2energyfix"
+archivesBaseName = "ic2energyfix"
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+	sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+	version = "1.7.10-10.13.4.1614-1.7.10"
+	runDir = "run"
+}
+
+dependencies {
+	compile name: 'industrialcraft-2-2.2.827-experimental'
+	// Shade Mixin library
+	shade group: "org.spongepowered", name: "mixin", version: "0.6.15-SNAPSHOT", changing: true
+	shadeClient group: "org.spongepowered", name: "mixin", version: "0.6.15-SNAPSHOT", changing: true
+}
+
+// Configure server resource processing
+project.processResources {
+	from (sourceSets.main.resources.srcDirs) {
+		include "mcmod.info"
+		expand (
+			"version": project.version, 
+			"mcversion": project.minecraft.version,
+		)
+	}
+}
+
+def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.ic2energyfix.refmap.json"
+
+jar {
+	from refMap
+	manifest {
+		attributes 'FMLCorePlugin': 'com.eric0210.ic2energyfix.IC2EnergyFix'
+		attributes 'FMLCorePluginContainsFMLMod': 'false'
+		attributes 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
+		attributes 'MixinConfigs': "mixins.ic2energyfix.json"
+    }
+
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
+		from (zipTree(artifact))
+	}
+}
+
+def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
+def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
+afterEvaluate {
+	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${refMap}"]
+}

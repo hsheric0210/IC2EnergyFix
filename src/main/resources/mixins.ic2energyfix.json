@@ -1,0 +1,30 @@
+// "block.tileentity.MixinTileEntityElectricKineticGenerator",
+// "block.tileentity.MixinTileEntityElectricHeatGenerator",
+// this two mixin create error 'java.lang.ArrayOutOfBoundsException: 6'.
+// idk why
+
+{
+	"required": true,
+	"compatibilityLevel": "JAVA_8",
+	"package": "com.eric0210.ic2energyfix.mixins",
+	"refmap": "mixins.ic2energyfix.refmap.json",
+	"mixins": [
+		"ic2.block.tileentity.MixinTileEntityBaseGenerator",
+		"ic2.block.tileentity.MixinTileEntityKineticGenerator",
+		"ic2.block.tileentity.MixinTileEntityStirlingGenerator",
+		"ic2.block.tileentity.MixinTileEntityGeoGenerator",
+		"ic2.block.tileentity.MixinTileEntitySemifluidGenerator",
+		"ic2.block.tileentity.MixinTileEntityLiquidHeatExchanger",
+		"ic2.block.tileentity.MixinTileEntitySteamGenerator",
+		"ic2.block.tileentity.MixinTileEntityNuclearReactor",
+		"ic2.block.tileentity.MixinTileEntityMatter",
+		"ic2.item.MixinItemUpgradeModule",
+		"MixinTileEntity",
+		"MixinTileEntityBlock",
+		"MixinTileEntityInventory",
+		"MixinTileEntityLiquidTankInventory",
+		"MixinTileEntityElectricMachine",
+		"MixinTileEntityLiquidTankElectricMachine",
+		"MixinIC2"
+	]
+}
