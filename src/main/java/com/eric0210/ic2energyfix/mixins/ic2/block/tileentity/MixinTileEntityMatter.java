@@ -16,7 +16,7 @@ import ic2.core.init.InternalName;
 public abstract class MixinTileEntityMatter extends MixinTileEntityLiquidTankElectricMachine
 {
 	@Inject(method = "attemptGeneration", at = @At("HEAD"), cancellable = true, remap = false)
-	public void attemptGeneration(final CallbackInfoReturnable<Boolean> callback)
+	public void attemptGeneration(final CallbackInfoReturnable<? super Boolean> callback)
 	{
 		final int count = (int) ((energy - energy % maxEnergy) / maxEnergy);
 		final int newFluidAmount = Math.min(fluidTank.getCapacity() - fluidTank.getFluidAmount(), count);

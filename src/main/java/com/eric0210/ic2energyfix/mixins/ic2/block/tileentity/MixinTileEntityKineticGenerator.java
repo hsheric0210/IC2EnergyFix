@@ -19,7 +19,7 @@ import ic2.core.util.ConfigUtil;
 public abstract class MixinTileEntityKineticGenerator extends MixinTileEntityInventory
 {
 	private final double outputMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/kinetic/outputMultiplier");
-	private final double outputStatic = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/kinetic/outputStatic");
+	private final double outputFixed = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/kinetic/outputFixed");
 	private final int maxStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/kinetic/maxStorage");
 	private final int guiTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/kinetic/guiTickrate");
 
@@ -48,13 +48,13 @@ public abstract class MixinTileEntityKineticGenerator extends MixinTileEntityInv
 	}
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getOfferedEnergy(final CallbackInfoReturnable<Double> callback)
+	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(EUstorage, outputStatic == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputStatic));
+		callback.setReturnValue(Math.min(EUstorage, outputFixed == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputFixed));
 	}
 
 	@Inject(method = "getTickRate", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getTickRate(final CallbackInfoReturnable<Integer> callback)
+	public void getTickRate(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue(guiTickrate);
 	}

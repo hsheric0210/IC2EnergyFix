@@ -38,7 +38,7 @@ public abstract class MixinTileEntitySteamGenerator
 	}
 
 	@Inject(method = "heatupmax", at = @At("HEAD"), cancellable = true, remap = false)
-	private void heatupmax(final CallbackInfoReturnable<Boolean> callback)
+	private void heatupmax(final CallbackInfoReturnable<? super Boolean> callback)
 	{
 		heatinput = requestHeat(maxHeatupHU);
 		if (heatinput > 0)

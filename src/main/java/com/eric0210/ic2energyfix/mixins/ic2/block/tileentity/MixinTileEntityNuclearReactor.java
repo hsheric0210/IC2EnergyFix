@@ -30,7 +30,7 @@ public abstract class MixinTileEntityNuclearReactor extends MixinTileEntityInven
 	}
 
 	@Inject(method = "getTickRate", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getTickRate(final CallbackInfoReturnable<Integer> callback)
+	public void getTickRate(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue(tickrate);
 	}

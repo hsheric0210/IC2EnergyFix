@@ -2,11 +2,13 @@ package com.eric0210.ic2energyfix;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import ic2.core.IC2;
 import ic2.core.util.Config;
+import ic2.core.util.Config.ParseException;
 
-public class IC2EnergyFixConfig
+public final class IC2EnergyFixConfig
 {
 	private static Config config;
 
@@ -28,11 +30,9 @@ public class IC2EnergyFixConfig
 		try
 		{
 			if (configFile.exists())
-			{
 				config.load(configFile);
-			}
 		}
-		catch (final Config.ParseException | IOException e)
+		catch (final ParseException | IOException e)
 		{
 			throw new IllegalStateException("Error loading ic2energyfix config", e);
 		}
@@ -48,11 +48,7 @@ public class IC2EnergyFixConfig
 		{
 			get().save(getFile());
 		}
-		catch (final IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (final Exception var1)
+		catch (final IOException | RuntimeException var1)
 		{
 			throw new RuntimeException("Error saving user config", var1);
 		}
@@ -60,9 +56,7 @@ public class IC2EnergyFixConfig
 
 	public static Config get()
 	{
-		if (config == null)
-			throw new IllegalStateException("config is null");
-		return config;
+		return Objects.requireNonNull(config, "config is null");
 	}
 
 	private static File getFile()
@@ -70,5 +64,9 @@ public class IC2EnergyFixConfig
 		final File folder = new File(IC2.platform.getMinecraftDir(), "config");
 		folder.mkdirs();
 		return new File(folder, "IC2EnergyFix.ini");
+	}
+
+	private IC2EnergyFixConfig()
+	{
 	}
 }

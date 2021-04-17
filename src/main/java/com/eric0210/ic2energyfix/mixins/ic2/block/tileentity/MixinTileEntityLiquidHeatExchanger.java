@@ -70,7 +70,7 @@ public class MixinTileEntityLiquidHeatExchanger
 	}
 
 	@Inject(method = "getMaxHeatEmittedPerTick", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getMaxHeatEmittedPerTick(final CallbackInfoReturnable<Integer> callback)
+	public void getMaxHeatEmittedPerTick(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		int total = 0;
 		final int per = maxHPT / heatexchangerslots.size();

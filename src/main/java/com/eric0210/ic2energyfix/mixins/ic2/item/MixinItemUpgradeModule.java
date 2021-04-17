@@ -20,19 +20,19 @@ public class MixinItemUpgradeModule
 	private final int energystorageExtraEnergyStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/upgrade/energystorage/extraEnergyStorage");
 	
 	@Inject(method = "getProcessTimeMultiplier", at = @At(value = "RETURN", shift = Shift.BEFORE, ordinal = 1), cancellable = true, remap = false)
-	public void processTimeMultiplier(final CallbackInfoReturnable<Double> callback)
+	public void processTimeMultiplier(final CallbackInfoReturnable<? super Double> callback)
 	{
 		callback.setReturnValue(overclockProcessTimeMultiplier);
 	}
 
 	@Inject(method = "getEnergyDemandMultiplier", at = @At(value = "RETURN", shift = Shift.BEFORE, ordinal = 1), cancellable = true, remap = false)
-	public void energyDemandMultiplier(final CallbackInfoReturnable<Double> callback)
+	public void energyDemandMultiplier(final CallbackInfoReturnable<? super Double> callback)
 	{
 		callback.setReturnValue(overclockEnergyDemandMultiplier);
 	}
 
 	@Inject(method = "getExtraEnergyStorage", at = @At(value = "RETURN", shift = Shift.BEFORE, ordinal = 1), cancellable = true, remap = false)
-	public void extraEnergyStorage(final CallbackInfoReturnable<Integer> callback)
+	public void extraEnergyStorage(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue(energystorageExtraEnergyStorage);
 	}

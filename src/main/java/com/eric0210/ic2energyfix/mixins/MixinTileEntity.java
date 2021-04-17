@@ -10,14 +10,14 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinTileEntity
 {
 	@Shadow(remap = false)
-	protected World field_145850_b;
+	protected World field_145850_b; // worldObj
 
 	@Shadow(remap = false)
-	public int field_145851_c;
+	public int field_145851_c; // xCoord
 
 	@Shadow(remap = false)
-	public int field_145848_d;
+	public int field_145848_d; // yCoord
 
 	@Shadow(remap = false)
-	public int field_145849_e;
+	public int field_145849_e; // zCoord
 }

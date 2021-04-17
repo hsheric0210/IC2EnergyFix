@@ -22,7 +22,7 @@ import ic2.core.util.ConfigUtil;
 public abstract class MixinTileEntityStirlingGenerator extends MixinTileEntityInventory
 {
 	private final double outputMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/stirling/outputMultiplier");
-	private final double outputStatic = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/stirling/outputStatic");
+	private final double outputFixed = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/stirling/outputFixed");
 	private final int maxStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/stirling/maxStorage");
 
 	@Shadow(remap = false)
@@ -45,13 +45,13 @@ public abstract class MixinTileEntityStirlingGenerator extends MixinTileEntityIn
 	protected abstract boolean gainEnergy();
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), remap = false, cancellable = true)
-	public void getOfferedEnergy(final CallbackInfoReturnable<Double> callback)
+	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(EUstorage, outputStatic == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputStatic));
+		callback.setReturnValue(Math.min(EUstorage, outputFixed == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputFixed));
 	}
 
 	@Inject(method = "gainEnergy", at = @At("HEAD"), remap = false, cancellable = true)
-	protected void gainEnergy(final CallbackInfoReturnable<Boolean> callback)
+	protected void gainEnergy(final CallbackInfoReturnable<? super Boolean> callback)
 	{
 		final ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 		final TileEntity te = field_145850_b.getTileEntity(field_145851_c + dir.offsetX, field_145848_d + dir.offsetY, field_145849_e + dir.offsetZ);
@@ -94,7 +94,7 @@ public abstract class MixinTileEntityStirlingGenerator extends MixinTileEntityIn
 	}
 
 	@Inject(method = "gaugeEUStorageScaled", at = @At("HEAD"), cancellable = true, remap = false)
-	public void gaugeEUStorageScaled(final int i, final CallbackInfoReturnable<Integer> callback)
+	public void gaugeEUStorageScaled(final int i, final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue((int) (EUstorage * i / maxStorage));
 	}

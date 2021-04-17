@@ -9,5 +9,5 @@ import ic2.core.block.TileEntityInventory;
 public abstract class MixinTileEntityInventory extends MixinTileEntityBlock
 {
 	@Shadow(remap = false)
-	public abstract void func_70296_d();
+	public abstract void func_70296_d(); // markDirty
 }

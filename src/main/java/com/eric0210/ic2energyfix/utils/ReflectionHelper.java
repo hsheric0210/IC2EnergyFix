@@ -1,6 +1,7 @@
 package com.eric0210.ic2energyfix.utils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -40,18 +41,10 @@ public class ReflectionHelper
 		}
 	}
 
-	private static void removeFinalAccessFlag(final Field f) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	private static void removeFinalAccessFlag(final Member member) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		final Field modifiers = f.getClass().getDeclaredField(MODIFIERS_FIELD_NAME);
+		final Field modifiers = member.getClass().getDeclaredField(MODIFIERS_FIELD_NAME);
 		modifiers.setAccessible(true);
-		modifiers.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-	}
-
-	@SuppressWarnings("unused")
-	private static void removeFinalAccessFlag(final Method m) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-	{
-		final Field modifiers = m.getClass().getDeclaredField(MODIFIERS_FIELD_NAME);
-		modifiers.setAccessible(true);
-		modifiers.setInt(m, m.getModifiers() & ~Modifier.FINAL);
+		modifiers.setInt(member, member.getModifiers() & ~Modifier.FINAL);
 	}
 }

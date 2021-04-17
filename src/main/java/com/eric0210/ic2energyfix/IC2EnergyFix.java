@@ -22,7 +22,7 @@ public class IC2EnergyFix implements IFMLLoadingPlugin
 	@Override
 	public String[] getASMTransformerClass()
 	{
-		return new String[0];
+		return ZERO_LENGTH_STRING_ARRAY;
 	}
 
 	@Override
@@ -77,4 +77,6 @@ public class IC2EnergyFix implements IFMLLoadingPlugin
 	{
 		LOGGER.log(Level.FINE, "[DEBUG] " + message);
 	}
+
+	private static final String[] ZERO_LENGTH_STRING_ARRAY = new String[0];
 }

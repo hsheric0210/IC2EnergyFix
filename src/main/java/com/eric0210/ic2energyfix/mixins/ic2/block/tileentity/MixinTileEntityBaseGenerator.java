@@ -15,7 +15,7 @@ import ic2.core.util.ConfigUtil;
 public class MixinTileEntityBaseGenerator
 {
 	private final double baseOutputMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/outputMultiplier");
-	private final double baseOutputStatic = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/outputStatic");
+	private final double baseoutputFixed = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/outputFixed");
 
 	@Shadow(remap = false)
 	public double storage;
@@ -24,8 +24,8 @@ public class MixinTileEntityBaseGenerator
 	public double power;
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), remap = false, cancellable = true)
-	public void getOfferedEnergy(final CallbackInfoReturnable<Double> callback)
+	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(storage, baseOutputStatic == -1 ? power * baseOutputMultiplier : baseOutputStatic));
+		callback.setReturnValue(Math.min(storage, baseoutputFixed == -1 ? power * baseOutputMultiplier : baseoutputFixed));
 	}
 }

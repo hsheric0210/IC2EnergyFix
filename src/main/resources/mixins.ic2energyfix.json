@@ -1,8 +1,3 @@
-// "block.tileentity.MixinTileEntityElectricKineticGenerator",
-// "block.tileentity.MixinTileEntityElectricHeatGenerator",
-// this two mixin create error 'java.lang.ArrayOutOfBoundsException: 6'.
-// idk why
-
 {
 	"required": true,
 	"compatibilityLevel": "JAVA_8",
@@ -18,7 +13,12 @@
 		"ic2.block.tileentity.MixinTileEntitySteamGenerator",
 		"ic2.block.tileentity.MixinTileEntityNuclearReactor",
 		"ic2.block.tileentity.MixinTileEntityMatter",
+		"ic2.block.tileentity.MixinTileEntityRecycler",
+		"ic2.block.tileentity.MixinTileEntityBlastFurnace",
+		"ic2.block.tileentity.MixinTileEntitySolarDestiller",
+
 		"ic2.item.MixinItemUpgradeModule",
+
 		"MixinTileEntity",
 		"MixinTileEntityBlock",
 		"MixinTileEntityInventory",

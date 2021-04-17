@@ -29,7 +29,7 @@ public abstract class MixinTileEntityGeoGenerator extends MixinTileEntityLiquidT
 {
 	private final int tankSize = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/geothermal/tankSize");
 	private final double outputMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/geothermal/outputMultiplier");
-	private final double outputStatic = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/geothermal/outputStatic");
+	private final double outputFixed = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/generator/geothermal/outputFixed");
 	private final int maxEUStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/geothermal/maxStorage");
 
 	@Shadow(remap = false)
@@ -64,9 +64,9 @@ public abstract class MixinTileEntityGeoGenerator extends MixinTileEntityLiquidT
 	}
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getOfferedEnergy(final CallbackInfoReturnable<Double> callback)
+	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(storage, outputStatic == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputStatic));
+		callback.setReturnValue(Math.min(storage, outputFixed == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputFixed));
 	}
 
 	@Inject(method = "updateEntityServer", at = @At("HEAD"), cancellable = true, remap = false)
@@ -107,13 +107,13 @@ public abstract class MixinTileEntityGeoGenerator extends MixinTileEntityLiquidT
 	}
 
 	@Inject(method = "isConverting", at = @At("HEAD"), cancellable = true, remap = false)
-	public void isConverting(final CallbackInfoReturnable<Boolean> callback)
+	public void isConverting(final CallbackInfoReturnable<? super Boolean> callback)
 	{
 		callback.setReturnValue(getTankAmount() > 0 && storage + production <= maxEUStorage);
 	}
 
 	@Inject(method = "gaugeStorageScaled", at = @At("HEAD"), cancellable = true, remap = false)
-	public void gaugeStorageScaled(final int i, final CallbackInfoReturnable<Integer> callback)
+	public void gaugeStorageScaled(final int i, final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue((int) (storage * i / maxEUStorage));
 	}
