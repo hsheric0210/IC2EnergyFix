@@ -21,17 +21,14 @@ public abstract class MixinTileEntitySolarDestiller extends MixinTileEntity
 	private final int coldTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solardestiller/coldBiomeTickrate");
 	private final int defaultTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solardestiller/defaultTickrate");
 
-	@Inject(method = "recycleChance", at = @At("HEAD"), cancellable = true, remap = false)
+	@Inject(method = "getTickRate", at = @At("HEAD"), cancellable = true, remap = false)
 	public void getTickRate(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		if (BiomeDictionary.isBiomeOfType(field_145850_b.getWorldChunkManager().getBiomeGenAt(field_145851_c, field_145849_e), Type.HOT))
 			callback.setReturnValue(hotTickrate);
-
-		if (BiomeDictionary.isBiomeOfType(field_145850_b.getWorldChunkManager().getBiomeGenAt(field_145851_c, field_145849_e), Type.COLD))
+		else if (BiomeDictionary.isBiomeOfType(field_145850_b.getWorldChunkManager().getBiomeGenAt(field_145851_c, field_145849_e), Type.COLD))
 			callback.setReturnValue(coldTickrate);
-
-		callback.setReturnValue(defaultTickrate);
-
-		callback.cancel();
+		else
+			callback.setReturnValue(defaultTickrate);
 	}
 }

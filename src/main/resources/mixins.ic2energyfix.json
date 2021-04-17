@@ -16,6 +16,7 @@
 		"ic2.block.tileentity.MixinTileEntityRecycler",
 		"ic2.block.tileentity.MixinTileEntityBlastFurnace",
 		"ic2.block.tileentity.MixinTileEntitySolarDestiller",
+		"ic2.block.tileentity.MixinTileEntityCondenser",
 
 		"ic2.item.MixinItemUpgradeModule",
 
