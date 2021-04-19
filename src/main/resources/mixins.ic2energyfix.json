@@ -17,6 +17,18 @@
 		"ic2.block.tileentity.MixinTileEntityBlastFurnace",
 		"ic2.block.tileentity.MixinTileEntitySolarDestiller",
 		"ic2.block.tileentity.MixinTileEntityCondenser",
+		"ic2.block.tileentity.MixinTileEntityAdvMiner",
+		"ic2.block.tileentity.MixinTileEntityCanner",
+		"ic2.block.tileentity.MixinTileEntityCompressor",
+		"ic2.block.tileentity.MixinTileEntityElectricFurnace",
+		"ic2.block.tileentity.MixinTileEntityExtractor",
+		"ic2.block.tileentity.MixinTileEntityFluidBottler",
+		"ic2.block.tileentity.MixinTileEntityIronFurnace",
+		"ic2.block.tileentity.MixinTileEntityMacerator",
+		"ic2.block.tileentity.MixinTileEntityMetalFormer",
+		"ic2.block.tileentity.MixinTileEntityOreWashing",
+		"ic2.block.tileentity.MixinTileEntityPump",
+		"ic2.block.tileentity.MixinTileEntitySolidCanner",
 
 		"ic2.item.MixinItemUpgradeModule",
 
