@@ -4,6 +4,7 @@ import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
 import com.eric0210.ic2energyfix.utils.ReflectionHelper;
 
 import ic2.core.block.machine.tileentity.TileEntityPump;
+import ic2.core.block.machine.tileentity.TileEntityStandardMachine;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -19,6 +20,7 @@ public class MixinTileEntityPump
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
-		ReflectionHelper.setOperationLength(this, newOperationLength);
+		ReflectionHelper.tamperFinalField(getClass(), "defaultOperationLength", this, newOperationLength);
+		ReflectionHelper.tamperFinalField(getClass(), "operationLength", this, newOperationLength);
 	}
 }

@@ -1,90 +1,82 @@
 package com.eric0210.ic2energyfix.utils;
 
-import ic2.core.block.machine.tileentity.TileEntityStandardMachine;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 
-public class ReflectionHelper
+import ic2.core.block.machine.tileentity.TileEntityStandardMachine;
+
+public final class ReflectionHelper
 {
 	private static final String MODIFIERS_FIELD_NAME = "modifiers";
 
-	public static <T> void tamperFinalField(final Field finalField, final Object instance, final T value)
+	private static <T> void tamperFinalField(final Field finalField, final Object instance, final T value) throws NoSuchFieldException, IllegalAccessException
 	{
-		try
-		{
-			// Set field accessible
-			if (!finalField.isAccessible())
-				finalField.setAccessible(true);
+		// Set field accessible
+		if (!finalField.isAccessible())
+			finalField.setAccessible(true);
 
-			// Remove final access modifier
-			removeFinalAccessFlag(finalField);
+		// Remove final access modifier
+		removeFinalAccessFlag(finalField);
 
-			// Tamper the field
-			finalField.set(instance, value);
-		}
-		catch (final NoSuchFieldException | IllegalArgumentException | IllegalAccessException | SecurityException e)
-		{
-			e.printStackTrace();
-		}
+		// Tamper the field
+		finalField.set(instance, value);
 	}
 
 	public static <T> void tamperFinalField(final Class<?> clazz, final String fieldName, final Object instance, final T value)
 	{
 		try
 		{
-			tamperFinalField(clazz.getDeclaredField(fieldName), instance, value);
+			final Field field = clazz.getDeclaredField(fieldName);
+
+			final T previousValue = readField(field, instance);
+
+			System.err.println(String.format("[IC2EnergyFix] [ReflectionHelper] Tampered final field: '%s.%s' value change: %s -> %s%n", clazz.getName(), fieldName, previousValue, value));
+
+			tamperFinalField(field, instance, value);
 		}
-		catch (final IllegalArgumentException | NoSuchFieldException | SecurityException e)
+		catch (final IllegalArgumentException | NoSuchFieldException | SecurityException | IllegalAccessException e)
 		{
-			new IllegalStateException("Can't tamper final field " + fieldName + " in class " + clazz.getName(), e).printStackTrace();
+			throw new IllegalArgumentException("[IC2EnergyFix] [ReflectionHelper] Can't tamper final field " + clazz.getName() + "." + fieldName, e);
 		}
 	}
 
-	private static void removeFinalAccessFlag(final Member member) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	private static void removeFinalAccessFlag(final Member member) throws NoSuchFieldException, IllegalAccessException
 	{
 		final Field modifiers = member.getClass().getDeclaredField(MODIFIERS_FIELD_NAME);
 		modifiers.setAccessible(true);
 		modifiers.setInt(member, member.getModifiers() & ~Modifier.FINAL);
 	}
 
-	private static <T> T readField(final Field field, final Object instance, final T defaultValue)
+	private static <T> T readField(final Field field, final Object instance) throws IllegalAccessException
 	{
-		try
-		{
-			// Set field accessible
-			if (!field.isAccessible())
-				field.setAccessible(true);
+		// Set field accessible
+		if (!field.isAccessible())
+			field.setAccessible(true);
 
-			// Read the field value
-			return (T) field.get(instance);
-		}
-		catch (final IllegalArgumentException | IllegalAccessException | SecurityException | ClassCastException e)
-		{
-			e.printStackTrace();
-		}
-
-		return defaultValue;
+		// Read the field value
+		return (T) field.get(instance);
 	}
 
-	private static <T> T readField(final Class<?> clazz, final String fieldName, final Object instance, final T defaultValue)
+	private static <T> T readField(final Class<?> clazz, final String fieldName, final Object instance)
 	{
 		try
 		{
-			return readField(clazz.getDeclaredField(fieldName), instance, defaultValue);
+			return readField(clazz.getDeclaredField(fieldName), instance);
 		}
-		catch (final IllegalArgumentException | NoSuchFieldException | SecurityException e)
+		catch (final IllegalArgumentException | NoSuchFieldException | SecurityException | IllegalAccessException e)
 		{
-			new IllegalStateException("Can't tamper final field " + fieldName + " in class " + clazz.getName(), e).printStackTrace();
+			throw new IllegalStateException("[IC2EnergyFix] [ReflectionHelper] Can't read field " + clazz.getName() + "." + fieldName, e);
 		}
-
-		return defaultValue;
 	}
 
 	public static void setOperationLength(final Object instance, final int newOperationLength)
 	{
 		tamperFinalField(TileEntityStandardMachine.class, "defaultOperationLength", instance, newOperationLength);
 		tamperFinalField(TileEntityStandardMachine.class, "operationLength", instance, newOperationLength);
+	}
+
+	private ReflectionHelper()
+	{
 	}
 }

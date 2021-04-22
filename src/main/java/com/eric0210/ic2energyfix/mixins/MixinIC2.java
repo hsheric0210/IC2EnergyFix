@@ -17,6 +17,6 @@ public abstract class MixinIC2
 	public void load(final CallbackInfo callback)
 	{
 		IC2EnergyFixConfig.load();
-		IC2EnergyFix.info("Configuration loaded");
+		System.err.println("[IC2EnergyFix] Configuration Loaded");
 	}
 }
