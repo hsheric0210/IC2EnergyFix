@@ -14,10 +14,10 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityAdvMiner.class)
 public class MixinTileEntityAdvMiner
 {
-	private final int workTick = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/advminer/workTick");
+	private final int workTick = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/advMiner/workTick");
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "workTick", this, workTick);
 	}

@@ -1,4 +1,6 @@
-package com.eric0210.ic2energyfix.mixins;
+package com.eric0210.ic2energyfix.mixins.ic2.block;
+
+import com.eric0210.ic2energyfix.mixins.minecraft.MixinTileEntity;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

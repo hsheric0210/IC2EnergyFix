@@ -1,4 +1,4 @@
-package com.eric0210.ic2energyfix.mixins;
+package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
 
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.FluidStack;

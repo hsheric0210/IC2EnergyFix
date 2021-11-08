@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
-import com.eric0210.ic2energyfix.mixins.MixinTileEntityInventory;
+import com.eric0210.ic2energyfix.mixins.ic2.block.MixinTileEntityInventory;
 import com.eric0210.ic2energyfix.utils.ReflectionHelper;
 
 import ic2.api.energy.EnergyNet;
@@ -42,19 +42,19 @@ public abstract class MixinTileEntityKineticGenerator extends MixinTileEntityInv
 	public abstract int getSourceTier();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "maxEUStorage", this, maxStorage);
 	}
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
+	public void injectGetOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(EUstorage, outputFixed == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputFixed));
+		callback.setReturnValue(Math.min(EUstorage, outputFixed > 0 ? outputFixed : EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier));
 	}
 
 	@Inject(method = "getTickRate", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getTickRate(final CallbackInfoReturnable<? super Integer> callback)
+	public void injectGetTickRate(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue(guiTickrate);
 	}

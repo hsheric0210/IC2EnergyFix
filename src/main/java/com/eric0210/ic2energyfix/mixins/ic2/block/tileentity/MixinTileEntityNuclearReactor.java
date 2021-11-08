@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
-import com.eric0210.ic2energyfix.mixins.MixinTileEntityInventory;
+import com.eric0210.ic2energyfix.mixins.ic2.block.MixinTileEntityInventory;
 import com.eric0210.ic2energyfix.utils.ReflectionHelper;
 
 import net.minecraftforge.fluids.FluidTank;
@@ -23,14 +23,14 @@ public abstract class MixinTileEntityNuclearReactor extends MixinTileEntityInven
 	private final int tickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/nuclearreactor/tickrate");
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "inputTank", this, new FluidTank(inputTankSize));
 		ReflectionHelper.tamperFinalField(getClass(), "outputTank", this, new FluidTank(outputTankSize));
 	}
 
 	@Inject(method = "getTickRate", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getTickRate(final CallbackInfoReturnable<? super Integer> callback)
+	public void injectGetTickRate(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue(tickrate);
 	}

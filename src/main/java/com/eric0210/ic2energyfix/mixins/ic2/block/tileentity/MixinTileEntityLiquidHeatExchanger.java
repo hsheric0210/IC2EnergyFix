@@ -1,5 +1,7 @@
 package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
 
+import java.util.stream.IntStream;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,9 +25,9 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityLiquidHeatExchanger.class)
 public class MixinTileEntityLiquidHeatExchanger
 {
-	private final int maxHPT = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/liquidheatexchanger/maxHeatExchangePerTick");
-	private final int inputTankSize = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/liquidheatexchanger/inputTankSize");
-	private final int outputTankSize = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/liquidheatexchanger/outputTankSize");
+	private final int maxHPT = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/liquidHeatExchanger/maxHeatExchangePerTick");
+	private final int inputTankSize = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/liquidHeatExchanger/inputTankSize");
+	private final int outputTankSize = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/liquidHeatExchanger/outputTankSize");
 
 	@Shadow(remap = false)
 	private boolean newActive;
@@ -63,20 +65,17 @@ public class MixinTileEntityLiquidHeatExchanger
 	public InvSlotUpgrade upgradeSlot;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "inputTank", this, new FluidTank(inputTankSize));
 		ReflectionHelper.tamperFinalField(getClass(), "outputTank", this, new FluidTank(outputTankSize));
 	}
 
 	@Inject(method = "getMaxHeatEmittedPerTick", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getMaxHeatEmittedPerTick(final CallbackInfoReturnable<? super Integer> callback)
+	public void injectGetMaxHeatEmittedPerTick(final CallbackInfoReturnable<? super Integer> callback)
 	{
-		int total = 0;
-		final int per = maxHPT / heatexchangerslots.size();
-		for (int i = 0; i < heatexchangerslots.size(); ++i)
-			if (heatexchangerslots.get(i) != null)
-				total += per;
-		callback.setReturnValue(total);
+		final int slotSize = heatexchangerslots.size();
+		final int per = maxHPT / slotSize;
+		callback.setReturnValue(IntStream.range(0, slotSize).filter(i -> heatexchangerslots.get(i) != null).map(i -> per).sum());
 	}
 }

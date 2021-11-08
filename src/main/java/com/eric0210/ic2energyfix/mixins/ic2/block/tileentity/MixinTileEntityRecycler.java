@@ -16,16 +16,16 @@ import ic2.core.util.ConfigUtil;
 public class MixinTileEntityRecycler
 {
 	private static final int recycleChance = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/recycler/recycleChance");
-	private final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/recyclerOperationLength");
+	private final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/recycler/operationLength");
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.setOperationLength(this, newOperationLength);
 	}
 
 	@Inject(method = "recycleChance", at = @At("HEAD"), cancellable = true, remap = false)
-	private static void recycleChance(final CallbackInfoReturnable<? super Integer> callback)
+	private static void injectRecycleChance(final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue(recycleChance);
 	}

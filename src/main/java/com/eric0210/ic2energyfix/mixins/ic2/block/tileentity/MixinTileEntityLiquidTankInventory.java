@@ -1,4 +1,6 @@
-package com.eric0210.ic2energyfix.mixins;
+package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
+
+import com.eric0210.ic2energyfix.mixins.ic2.block.MixinTileEntityInventory;
 
 import net.minecraftforge.fluids.FluidTank;
 

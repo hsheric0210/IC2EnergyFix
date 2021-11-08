@@ -24,8 +24,8 @@ public class MixinTileEntityBaseGenerator
 	public double power;
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), remap = false, cancellable = true)
-	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
+	public void injectGetOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(storage, baseoutputFixed == -1 ? power * baseOutputMultiplier : baseoutputFixed));
+		callback.setReturnValue(Math.min(storage, baseoutputFixed > 0 ? baseoutputFixed : power * baseOutputMultiplier));
 	}
 }

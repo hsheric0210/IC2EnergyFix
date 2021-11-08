@@ -1,4 +1,6 @@
-package com.eric0210.ic2energyfix.mixins;
+package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
+
+import com.eric0210.ic2energyfix.mixins.ic2.block.MixinTileEntityInventory;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +18,6 @@ public abstract class MixinTileEntityElectricMachine extends MixinTileEntityInve
 	@Shadow(remap = false)
 	public int maxEnergy;
 
-	@Final
 	@Shadow(remap = false)
 	private boolean addedToEnergyNet;
 

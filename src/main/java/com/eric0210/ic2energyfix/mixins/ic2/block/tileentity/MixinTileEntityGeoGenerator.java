@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
-import com.eric0210.ic2energyfix.mixins.MixinTileEntityLiquidTankInventory;
 import com.eric0210.ic2energyfix.utils.ReflectionHelper;
 
 import net.minecraft.item.ItemStack;
@@ -58,21 +57,20 @@ public abstract class MixinTileEntityGeoGenerator extends MixinTileEntityLiquidT
 	public abstract boolean gainEnergy();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass().getSuperclass(), "fluidTank", this, new FluidTank(tankSize));
 	}
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), cancellable = true, remap = false)
-	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
+	public void injectGetOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(storage, outputFixed == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputFixed));
+		callback.setReturnValue(Math.min(storage, outputFixed > 0 ? outputFixed : EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier));
 	}
 
-	@Inject(method = "updateEntityServer", at = @At("HEAD"), cancellable = true, remap = false)
-	protected void updateEntityServer(final CallbackInfo callback)
+	@Inject(method = "updateEntityServer", at = @At(value = "FIELD", target = "Lic2/core/block/generator/tileentity/TileEntityGeoGenerator;maxStorage:S"), cancellable = true, remap = false)
+	protected void injectUpdateEntityServer(final CallbackInfo callback)
 	{
-
 		boolean needsInvUpdate = false;
 		if (needsFluid())
 		{
@@ -107,13 +105,13 @@ public abstract class MixinTileEntityGeoGenerator extends MixinTileEntityLiquidT
 	}
 
 	@Inject(method = "isConverting", at = @At("HEAD"), cancellable = true, remap = false)
-	public void isConverting(final CallbackInfoReturnable<? super Boolean> callback)
+	public void injectIsConverting(final CallbackInfoReturnable<? super Boolean> callback)
 	{
 		callback.setReturnValue(getTankAmount() > 0 && storage + production <= maxEUStorage);
 	}
 
 	@Inject(method = "gaugeStorageScaled", at = @At("HEAD"), cancellable = true, remap = false)
-	public void gaugeStorageScaled(final int i, final CallbackInfoReturnable<? super Integer> callback)
+	public void injectGaugeStorageScaled(final int i, final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue((int) (storage * i / maxEUStorage));
 	}

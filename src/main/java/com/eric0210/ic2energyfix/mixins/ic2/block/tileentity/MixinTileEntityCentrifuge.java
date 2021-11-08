@@ -9,12 +9,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import ic2.core.block.machine.tileentity.TileEntityCanner;
+import ic2.core.block.machine.tileentity.TileEntityCentrifuge;
 import ic2.core.util.ConfigUtil;
 
-@Mixin(TileEntityCanner.class)
-public class MixinTileEntityCanner
+@Mixin(TileEntityCentrifuge.class)
+public class MixinTileEntityCentrifuge
 {
-	private final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/cannerOperationLength");
+	private final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/centrifugeOperationLength");
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)

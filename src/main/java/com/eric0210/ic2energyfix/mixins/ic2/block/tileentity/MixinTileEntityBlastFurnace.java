@@ -14,10 +14,10 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityBlastFurnace.class)
 public class MixinTileEntityBlastFurnace
 {
-	private final int newMaxProgress = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/blastfurnace/maxprogress");
+	private final int newMaxProgress = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/blastFurnace/maxprogress");
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "maxprogress", this, newMaxProgress);
 	}

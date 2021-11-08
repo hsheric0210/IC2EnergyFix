@@ -42,8 +42,8 @@ apply plugin: 'forge'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-version = "1.0"
-group= "ic2energyfix"
+version = "1.1"
+group = "ic2energyfix"
 archivesBaseName = "ic2energyfix"
 
 sourceCompatibility = targetCompatibility = '1.8'
@@ -58,6 +58,7 @@ minecraft {
 
 dependencies {
 	compile name: 'industrialcraft-2-2.2.828-experimental-dev'
+
 	// Shade Mixin library
 	shade group: "org.spongepowered", name: "mixin", version: "0.6.15-SNAPSHOT", changing: true
 	shadeClient group: "org.spongepowered", name: "mixin", version: "0.6.15-SNAPSHOT", changing: true
@@ -65,11 +66,11 @@ dependencies {
 
 // Configure server resource processing
 project.processResources {
-	from (sourceSets.main.resources.srcDirs) {
+	from(sourceSets.main.resources.srcDirs) {
 		include "mcmod.info"
-		expand (
-			"version": project.version, 
-			"mcversion": project.minecraft.version,
+		expand(
+				"version": project.version,
+				"mcversion": project.minecraft.version,
 		)
 	}
 }
@@ -83,16 +84,15 @@ jar {
 		attributes 'FMLCorePluginContainsFMLMod': 'false'
 		attributes 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
 		attributes 'MixinConfigs': "mixins.ic2energyfix.json"
-    }
+	}
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
-		from (zipTree(artifact))
+		from(zipTree(artifact))
 	}
 }
 
 def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-def mixinClientSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixinsClient.srg"
 afterEvaluate {
 	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${refMap}"]
 }

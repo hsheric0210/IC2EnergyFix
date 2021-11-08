@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
-import com.eric0210.ic2energyfix.mixins.MixinTileEntityInventory;
+import com.eric0210.ic2energyfix.mixins.ic2.block.MixinTileEntityInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
@@ -45,13 +45,13 @@ public abstract class MixinTileEntityStirlingGenerator extends MixinTileEntityIn
 	protected abstract boolean gainEnergy();
 
 	@Inject(method = "getOfferedEnergy", at = @At("HEAD"), remap = false, cancellable = true)
-	public void getOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
+	public void injectGetOfferedEnergy(final CallbackInfoReturnable<? super Double> callback)
 	{
-		callback.setReturnValue(Math.min(EUstorage, outputFixed == -1 ? EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier : outputFixed));
+		callback.setReturnValue(Math.min(EUstorage, outputFixed > 0 ? outputFixed : EnergyNet.instance.getPowerFromTier(getSourceTier()) * outputMultiplier));
 	}
 
 	@Inject(method = "gainEnergy", at = @At("HEAD"), remap = false, cancellable = true)
-	protected void gainEnergy(final CallbackInfoReturnable<? super Boolean> callback)
+	protected void injectGainEnergy(final CallbackInfoReturnable<? super Boolean> callback)
 	{
 		final ForgeDirection dir = ForgeDirection.getOrientation(getFacing());
 		final TileEntity te = field_145850_b.getTileEntity(field_145851_c + dir.offsetX, field_145848_d + dir.offsetY, field_145849_e + dir.offsetZ);
@@ -77,15 +77,11 @@ public abstract class MixinTileEntityStirlingGenerator extends MixinTileEntityIn
 	}
 
 	@Inject(method = "updateEntityServer", at = @At("HEAD"), cancellable = true, remap = false)
-	protected void updateEntityServer(final CallbackInfo callback)
+	protected void injectUpdateEntityServer(final CallbackInfo callback)
 	{
-		final boolean needsInvUpdate = false;
 		final boolean newActive = gainEnergy();
 		if (EUstorage > maxStorage)
 			EUstorage = maxStorage;
-
-		if (needsInvUpdate)
-			func_70296_d();
 
 		if (getActive() != newActive)
 			setActive(newActive);
@@ -94,7 +90,7 @@ public abstract class MixinTileEntityStirlingGenerator extends MixinTileEntityIn
 	}
 
 	@Inject(method = "gaugeEUStorageScaled", at = @At("HEAD"), cancellable = true, remap = false)
-	public void gaugeEUStorageScaled(final int i, final CallbackInfoReturnable<? super Integer> callback)
+	public void injectGaugeEUStorageScaled(final int i, final CallbackInfoReturnable<? super Integer> callback)
 	{
 		callback.setReturnValue((int) (EUstorage * i / maxStorage));
 	}

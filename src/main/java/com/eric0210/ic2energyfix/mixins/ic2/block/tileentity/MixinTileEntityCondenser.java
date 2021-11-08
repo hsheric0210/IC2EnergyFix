@@ -18,7 +18,7 @@ public class MixinTileEntityCondenser
 	private final int activeCoolingPerVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/condenser/activeCoolingPerVent");
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(@SuppressWarnings("unused") final CallbackInfo callback)
+	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "passivecolling", this, passiveCooling > Short.MAX_VALUE ? Short.MAX_VALUE : (short) passiveCooling);
 		ReflectionHelper.tamperFinalField(getClass(), "activecollingperVent", this, activeCoolingPerVent > Short.MAX_VALUE ? Short.MAX_VALUE : (short) activeCoolingPerVent);

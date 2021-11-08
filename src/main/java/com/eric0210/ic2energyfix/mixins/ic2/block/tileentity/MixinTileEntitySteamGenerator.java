@@ -1,13 +1,13 @@
 package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
 
+import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
 
 import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
 import ic2.core.util.ConfigUtil;
@@ -15,10 +15,10 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntitySteamGenerator.class)
 public abstract class MixinTileEntitySteamGenerator
 {
-	private final int maxHeatupHU = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamgenerator/maxHeatupHU");
-	private final int baseHUNeed = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamgenerator/baseHUNeed");
-	private final float huNeedRatio = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/steamgenerator/huNeedRatio");
-	private final float huNeedMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/steamgenerator/huNeedMultiplier");
+	private final int maxHeatupHU = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamGenerator/maxHeatupHU");
+	private final int baseHUNeed = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamGenerator/huNeedBase");
+	private final float huNeedRatio = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/steamGenerator/huNeedRatio");
+	private final float huNeedMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/steamGenerator/huNeedMultiplier");
 
 	@Shadow(remap = false)
 	private int heatinput;
@@ -37,20 +37,14 @@ public abstract class MixinTileEntitySteamGenerator
 	{
 	}
 
-	@Inject(method = "heatupmax", at = @At("HEAD"), cancellable = true, remap = false)
-	private void heatupmax(final CallbackInfoReturnable<? super Boolean> callback)
+	@ModifyConstant(method = "heatupmax", constant = @Constant(intValue = 1200), remap = false)
+	private int injectHeatupmax(final int _1200)
 	{
-		heatinput = requestHeat(maxHeatupHU);
-		if (heatinput > 0)
-		{
-			heatup(heatinput);
-			callback.setReturnValue(true);
-		}
-		callback.setReturnValue(false);
+		return maxHeatupHU;
 	}
 
 	@ModifyVariable(method = "getOutputfluid", at = @At("HEAD"), name = "hu_need", ordinal = 0, remap = false)
-	private int getOutputfluid(@SuppressWarnings("unused") final int hu_need_per_mb)
+	private int injectGetOutputfluid(@SuppressWarnings("unused") final int hu_need_per_mb)
 	{
 		return baseHUNeed + Math.round(pressurevalve / huNeedRatio * huNeedMultiplier);
 	}
