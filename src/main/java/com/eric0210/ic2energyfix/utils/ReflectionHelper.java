@@ -27,13 +27,7 @@ public final class ReflectionHelper
 	{
 		try
 		{
-			final Field field = clazz.getDeclaredField(fieldName);
-
-			final T previousValue = readField(field, instance);
-
-			System.err.println(String.format("[IC2EnergyFix] [ReflectionHelper] Tampered final field: '%s.%s' value change: %s -> %s%n", clazz.getName(), fieldName, previousValue, value));
-
-			tamperFinalField(field, instance, value);
+			tamperFinalField(clazz.getDeclaredField(fieldName), instance, value);
 		}
 		catch (final IllegalArgumentException | NoSuchFieldException | SecurityException | IllegalAccessException e)
 		{

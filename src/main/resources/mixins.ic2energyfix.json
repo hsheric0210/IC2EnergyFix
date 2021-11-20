@@ -5,6 +5,7 @@
   "refmap": "mixins.ic2energyfix.refmap.json",
   "mixins": [
     "ic2.MixinIC2",
+    "ic2.MixinWindSim",
 
     "ic2.block.MixinTileEntityBlock",
 
@@ -47,6 +48,12 @@
     "ic2.item.MixinItemNanoSaber",
     "ic2.item.MixinElectricItemManager",
     "ic2.item.MixinItemToolMiningLaser",
+    "ic2.item.MixinItemReactorVent",
+    "ic2.item.MixinItemReactorVentSpread",
+    "ic2.item.MixinItemReactorHeatSwitch",
+
+    "ic2.block.MixinBlockFoam",
+    "ic2.block.MixinBlockReinforcedFoam",
 
     "minecraft.MixinTileEntity",
     "ic2.block.MixinTileEntityInventory"
