@@ -22,7 +22,6 @@
     "ic2.block.tileentity.MixinTileEntityGeoGenerator",
     "ic2.block.tileentity.MixinTileEntityIronFurnace",
     "ic2.block.tileentity.MixinTileEntityLiquidHeatExchanger",
-    "ic2.block.tileentity.MixinTileEntityLiquidTankElectricMachine",
     "ic2.block.tileentity.MixinTileEntityMacerator",
     "ic2.block.tileentity.MixinTileEntityMatter",
     "ic2.block.tileentity.MixinTileEntityMetalFormer",

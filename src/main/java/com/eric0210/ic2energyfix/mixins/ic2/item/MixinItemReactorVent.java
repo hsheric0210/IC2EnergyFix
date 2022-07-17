@@ -7,41 +7,41 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import ic2.core.init.InternalName;
 import ic2.core.item.reactor.ItemReactorVent;
+import ic2.core.ref.ItemName;
 import ic2.core.util.ConfigUtil;
 
 @Mixin(ItemReactorVent.class)
 public class MixinItemReactorVent
 {
-	private static final int reactorVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/vent/heatStorage");
-	private static final int reactorVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/vent/selfVent");
-	private static final int reactorVentReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/vent/reactorVent");
+	private static final int heatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/heatStorage");
+	private static final int heatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/selfVent");
+	private static final int heatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/heatVent");
 
-	private static final int reactorVentCoreHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventCore/heatStorage");
-	private static final int reactorVentCoreSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventCore/selfVent");
-	private static final int reactorVentCoreReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventCore/reactorVent");
+	private static final int reactorHeatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/heatStorage");
+	private static final int reactorHeatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/selfVent");
+	private static final int reactorHeatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/heatVent");
 
-	private static final int reactorVentGoldHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventGold/heatStorage");
-	private static final int reactorVentGoldSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventGold/selfVent");
-	private static final int reactorVentGoldReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventGold/reactorVent");
+	private static final int overclockedHeatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/heatStorage");
+	private static final int overclockedHeatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/selfVent");
+	private static final int overclockedHeatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/heatVent");
 
-	private static final int reactorVentDiamondHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventDiamond/heatStorage");
-	private static final int reactorVentDiamondSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventDiamond/selfVent");
-	private static final int reactorVentDiamondReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/ventDiamond/reactorVent");
+	private static final int advancedHeatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/heatStorage");
+	private static final int advancedHeatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/selfVent");
+	private static final int advancedHeatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/heatVent");
 
 	@ModifyArgs(method = "<init>", at = @At("HEAD"), remap = false)
 	private static void injectArguments(final Args args)
 	{
 		final String internalName = String.valueOf(args.get(0));
 
-		if (internalName.equalsIgnoreCase(InternalName.reactorVent.name()))
-			args.setAll(internalName, reactorVentHeatStorage, reactorVentSelfVent, reactorVentReactorVent);
-		else if (internalName.equalsIgnoreCase(InternalName.reactorVentCore.name()))
-			args.setAll(internalName, reactorVentCoreHeatStorage, reactorVentCoreSelfVent, reactorVentCoreReactorVent);
-		else if (internalName.equalsIgnoreCase(InternalName.reactorVentGold.name()))
-			args.setAll(internalName, reactorVentGoldHeatStorage, reactorVentGoldSelfVent, reactorVentGoldReactorVent);
-		else if (internalName.equalsIgnoreCase(InternalName.reactorVentDiamond.name()))
-			args.setAll(internalName, reactorVentDiamondHeatStorage, reactorVentDiamondSelfVent, reactorVentDiamondReactorVent);
+		if (internalName.equalsIgnoreCase(ItemName.heat_vent.name()))
+			args.setAll(internalName, heatVentHeatStorage, heatVentSelfVent, heatVentheatVent);
+		else if (internalName.equalsIgnoreCase(ItemName.reactor_heat_vent.name()))
+			args.setAll(internalName, reactorHeatVentHeatStorage, reactorHeatVentSelfVent, reactorHeatVentheatVent);
+		else if (internalName.equalsIgnoreCase(ItemName.overclocked_heat_vent.name()))
+			args.setAll(internalName, overclockedHeatVentHeatStorage, overclockedHeatVentSelfVent, overclockedHeatVentheatVent);
+		else if (internalName.equalsIgnoreCase(ItemName.advanced_heat_vent.name()))
+			args.setAll(internalName, advancedHeatVentHeatStorage, advancedHeatVentSelfVent, advancedHeatVentheatVent);
 	}
 }

@@ -22,7 +22,7 @@ public class MixinTileEntityBlastFurnace
 	@Shadow(remap = false)
 	protected int progressNeeded;
 
-	@Inject(method = "updateEntityServer", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntityBlastFurnace;progressNeeded:I", shift = Shift.AFTER, ordinal = 0))
+	@Inject(method = "updateEntityServer", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntityBlastFurnace;progressNeeded:I", shift = Shift.AFTER, ordinal = 0, remap = false), remap = false)
 	public void injectProgressNeededMultiplier(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		progressNeeded += progressNeededPreOffset;

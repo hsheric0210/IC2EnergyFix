@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 
-import ic2.core.block.machine.tileentity.TileEntityStandardMachine;
-
 public final class ReflectionHelper
 {
 	private static final String MODIFIERS_FIELD_NAME = "modifiers";
@@ -62,12 +60,6 @@ public final class ReflectionHelper
 		{
 			throw new IllegalStateException("[IC2EnergyFix] [ReflectionHelper] Can't read field " + clazz.getName() + "." + fieldName, e);
 		}
-	}
-
-	public static void setOperationLength(final Object instance, final int newOperationLength)
-	{
-		tamperFinalField(TileEntityStandardMachine.class, "defaultOperationLength", instance, newOperationLength);
-		tamperFinalField(TileEntityStandardMachine.class, "operationLength", instance, newOperationLength);
 	}
 
 	private ReflectionHelper()

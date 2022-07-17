@@ -4,14 +4,18 @@ import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
 import com.eric0210.ic2energyfix.mixins.minecraft.MixinTileEntity;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import ic2.api.crops.Crops;
@@ -31,51 +35,57 @@ public class MixinTileEntityCrop extends MixinTileEntity
 	private final boolean airQualityFreshnessBonus = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/crop/airQuality/freshnessBonusCheck");
 	private final boolean airQualityCanSeeTheSkyBonus = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/crop/airQuality/canSeeTheSkyBonusCheck");
 
-	@Redirect(method = "updateHumidity", at = @At(value = "INVOKE", target = "Lic2/api/crops/Crops;getHumidityBiomeBonus(Lnet/minecraft/world/biome/BiomeGenBase;)I"), remap = false)
-	public int injectHumidityBiomeBonus(final Crops instance, final BiomeGenBase biomeGenBase)
+	@ModifyVariable(method = "updateBiomeHumidityBonus", at = @At(value = "FIELD", target = "Lic2/core/crop/TileEntityCrop;biomeHumidityBonus:B", shift = Shift.BEFORE), name = "rainfallBonus", remap = false)
+	public int injectBiomeHumidityRainfallBonus(final int value)
 	{
-		return humidityBiomeBonus ? instance.getHumidityBiomeBonus(biomeGenBase) : 10;
+		return humidityBiomeBonus ? value : 10;
 	}
 
-	@Redirect(method = "updateHumidity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockMetadata(III)I", ordinal = 0), remap = false)
-	public int injectHumidityFarmlandWetnessBonus(final World instance, final int x, final int y, final int z)
+	@ModifyVariable(method = "updateBiomeHumidityBonus", at = @At(value = "FIELD", target = "Lic2/core/crop/TileEntityCrop;biomeHumidityBonus:B", shift = Shift.BEFORE), name = "coefficientBonus", remap = false)
+	public int injectBiomeHumidityCoefficientBonus(final int value)
 	{
-		return humidityFarmlandWetnessBonus ? instance.getBlockMetadata(x, y - 1, z) : 7;
+		return humidityBiomeBonus ? value : 10;
 	}
 
-	@Redirect(method = "updateNutrients", at = @At(value = "INVOKE", target = "Lic2/api/crops/Crops;getNutrientBiomeBonus(Lnet/minecraft/world/biome/BiomeGenBase;)I"), remap = false)
-	public int injectNutrientsBiomeBonus(final Crops instance, final BiomeGenBase biomeGenBase)
+	@Redirect(method = "updateTerrainHumidity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/state/IBlockState;getValue(Lnet/minecraft/block/properties/IProperty;)Ljava/lang/Comparable;"), remap = false)
+	public Integer injectHumidityFarmlandWetnessBonus(final IBlockState instance, final IProperty<? super Integer> tiProperty)
 	{
-		return nutrientsBiomeBonus ? instance.getNutrientBiomeBonus(biomeGenBase) : 10;
+		return humidityFarmlandWetnessBonus ? (Integer) instance.getValue(tiProperty) : 7;
 	}
 
-	@Redirect(method = "updateNutrients", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlock(III)Lnet/minecraft/block/Block;"), remap = false)
-	public Block injectNutrientsDirtBonus(final World instance, final int x, final int y, final int z)
+	@Redirect(method = "updateTerrainNutrients", at = @At(value = "INVOKE", target = "Lic2/api/crops/Crops;getNutrientBiomeBonus(Lnet/minecraft/world/biome/Biome;)I"), remap = false)
+	public int injectNutrientsBiomeBonus(final Crops instance, final Biome biome)
 	{
-		return nutrientsDirtBonus ? instance.getBlock(x,y,z) : Blocks.dirt; // Always-succeeding comparison
+		return nutrientsBiomeBonus ? instance.getNutrientBiomeBonus(biome) : 10;
 	}
 
-	@Redirect(method = "updateAirQuality", at = @At(value = "FIELD", target = "Lic2/core/crop/TileEntityCrop;yCoord:I", ordinal = 0), remap = false)
-	public int injectAirQualityHeightBonus(final TileEntityCrop instance)
+	@Redirect(method = "updateTerrainNutrients", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/state/IBlockState;getBlock()Lnet/minecraft/block/Block;"), remap = false)
+	public Block injectNutrientsDirtBonus(final IBlockState instance)
 	{
-		return airQualityHeightBonus ? instance.yCoord : 124; // (124 - 64) / 15 = 4
+		return nutrientsDirtBonus ? instance.getBlock() : Blocks.DIRT; // Always-succeeding comparison
 	}
 
-	@Redirect(method = "updateAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isBlockNormalCubeDefault(IIIZ)Z"), remap = false)
-	public boolean injectAirQualityFreshnessBonus1(final World instance, final int x, final int y, final int z, final boolean flag)
+	@Redirect(method = "updateTerrainAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;getY()I", ordinal = 0), remap = false)
+	public int injectAirQualityHeightBonus(final BlockPos instance)
 	{
-		return airQualityFreshnessBonus && instance.isBlockNormalCubeDefault(x, y, z, flag);
+		return airQualityHeightBonus ? instance.getY() : 124; // (124 - 64) / 15 = 4
 	}
 
-	@Redirect(method = "updateAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getTileEntity(III)Lnet/minecraft/tileentity/TileEntity;"), remap = false)
-	public TileEntity injectAirQualityFreshnessBonus2(final World instance, final int x, final int y, final int z)
+	@Redirect(method = "updateTerrainAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isBlockNormalCube(Lnet/minecraft/util/math/BlockPos;Z)Z"), remap = false)
+	public boolean injectAirQualityFreshnessBonus1(final World instance, final BlockPos pos, boolean _default)
 	{
-		return airQualityFreshnessBonus ? instance.getTileEntity(x, y, z) : null;
+		return airQualityFreshnessBonus && instance.isBlockNormalCube(pos, _default);
 	}
 
-	@Redirect(method = "updateAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;canBlockSeeTheSky(III)Z"), remap = false)
-	public boolean injectAirQualityCanSeeTheSkyBonus(final World instance, final int x, final int y, final int z)
+	@Redirect(method = "updateTerrainAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getTileEntity(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/tileentity/TileEntity;"), remap = false)
+	public TileEntity injectAirQualityFreshnessBonus2(final World instance, final BlockPos pos)
 	{
-		return !airQualityCanSeeTheSkyBonus || instance.canBlockSeeTheSky(x, y, z);
+		return airQualityFreshnessBonus ? instance.getTileEntity(pos) : null;
+	}
+
+	@Redirect(method = "updateTerrainAirQuality", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;canSeeSky(Lnet/minecraft/util/math/BlockPos;)Z"), remap = false)
+	public boolean injectAirQualityCanSeeTheSkyBonus(final World instance, final BlockPos pos)
+	{
+		return !airQualityCanSeeTheSkyBonus || instance.canSeeSky(pos);
 	}
 }

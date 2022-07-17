@@ -101,6 +101,8 @@ dependencies {
 	minecraft "net.minecraftforge:forge:$project.version_minecraft-$project.version_forge"
 	compile name: 'industrialcraft-2-2.8.222-ex112-dev'
 
+	annotationProcessor 'org.spongepowered:mixin:0.8.1-SNAPSHOT:processor'
+
 	shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
 		exclude group: 'org.ow2.asm', module: 'asm-tree'
 	}
@@ -114,12 +116,20 @@ jar {
 	}
 
 	manifest.attributes(
-			"FMLCorePluginContainsFMLMod": "true",
+			"FMLCorePluginContainsFMLMod": "false",
 			"ForceLoadAsMod": "true",
+			"MixinCompatibilityLevel": "JAVA_8",
 			"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
-			"MixinConfigs": "mixins.surge.json",
+			"TweakOrder": "100",
+			"MixinConfigs": "mixins.ic2energyfix.json",
 			"FMLCorePlugin": "com.eric0210.ic2energyfix.IC2EnergyFix"
 	)
 }
 
-// build.dependsOn reobfJar
+reobf {
+	jar {
+		classpath = sourceSets.main.compileClasspath
+	}
+}
+
+build.dependsOn reobfJar

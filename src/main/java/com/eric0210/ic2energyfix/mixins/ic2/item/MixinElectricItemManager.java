@@ -2,16 +2,11 @@ package com.eric0210.ic2energyfix.mixins.ic2.item;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
 
-import net.minecraft.item.ItemStack;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import ic2.core.item.ElectricItemManager;
-import ic2.core.item.ItemUpgradeModule;
 import ic2.core.util.ConfigUtil;
 
 @Mixin(ElectricItemManager.class)

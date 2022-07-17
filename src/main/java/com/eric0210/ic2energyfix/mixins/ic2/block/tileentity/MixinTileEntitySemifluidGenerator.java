@@ -47,7 +47,7 @@ public abstract class MixinTileEntitySemifluidGenerator extends MixinTileEntityB
 		return fluidTankCapacity;
 	}
 
-	@Redirect(method = "init", at = @At(value = "INVOKE", target = "Lic2/core/block/generator/tileentity/TileEntitySemifluidGenerator;addFuel(Ljava/lang/String;JJ)V"))
+	@Redirect(method = "init", at = @At(value = "INVOKE", target = "Lic2/core/block/generator/tileentity/TileEntitySemifluidGenerator;addFuel(Ljava/lang/String;JJ)V", remap = false), remap = false)
 	private static void injectFuelEnergyModifier(final String fluidName, long energyPerMb, long energyPerTick)
 	{
 		switch (fluidName.toLowerCase(Locale.ROOT))

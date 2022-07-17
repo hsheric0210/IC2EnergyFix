@@ -4,6 +4,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import ic2.core.block.comp.Energy;
 import ic2.core.block.invslot.InvSlotDischarge;
 import ic2.core.block.machine.tileentity.TileEntityElectricMachine;
 
@@ -12,7 +13,7 @@ public abstract class MixinTileEntityElectricMachine
 {
 	@Shadow(remap = false)
 	@Final
-	protected double energy;
+	protected Energy energy;
 
 	@Shadow(remap = false)
 	@Final

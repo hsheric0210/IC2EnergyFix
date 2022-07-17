@@ -16,19 +16,19 @@ public class MixinTileEntitySolarDestiller
 	private final int coldTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solarDestiller/coldBiomeTickrate");
 	private final int defaultTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solarDestiller/defaultTickrate");
 
-	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 36))
+	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 36), remap = false)
 	private int injectHotBiomeTickRate(final int _36)
 	{
 		return hotTickrate;
 	}
 
-	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 144))
+	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 144), remap = false)
 	private int injectColdBiomeTickRate(final int _144)
 	{
 		return coldTickrate;
 	}
 
-	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 72))
+	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 72), remap = false)
 	private int injectDefaultTickRate(final int _72)
 	{
 		return defaultTickrate;

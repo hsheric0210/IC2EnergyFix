@@ -18,7 +18,7 @@ public class MixinTileEntityAdvMiner
 	private final int scanEnergy = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/advMiner/scanEnergy");
 	private final int mineEnergy = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/advMiner/mineEnergy");
 
-	@Inject(method = "<init>(I)V", at = @At("RETURN"))
+	@Inject(method = "<init>(I)V", at = @At("RETURN"), remap = false)
 	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
 	{
 		ReflectionHelper.tamperFinalField(getClass(), "workTick", this, workTick);

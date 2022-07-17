@@ -31,19 +31,19 @@ public abstract class MixinTileEntitySteamGenerator
 		return baseHeatupHU;
 	}
 
-	@ModifyVariable(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;systemHeat:F", ordinal = 0), name = "hUneeded", remap = false)
+	@ModifyVariable(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;systemHeat:F", ordinal = 0, remap = false), name = "hUneeded", remap = false)
 	private float injectHUNeeded(@SuppressWarnings("unused") final float hUNeeded)
 	{
 		return baseHUNeed + pressure / huNeedRatio * huNeedMultiplier;
 	}
 
-	@ModifyVariable(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;systemHeat:F", ordinal = 0), name = "targetTemp", remap = false)
+	@ModifyVariable(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;systemHeat:F", ordinal = 0, remap = false), name = "targetTemp", remap = false)
 	private float injectTargetTemp(@SuppressWarnings("unused") final float targetTemp)
 	{
 		return baseHUNeed + pressure / huNeedRatio * huNeedMultiplier * 2.74F;
 	}
 
-	@Redirect(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;calcification:I", ordinal = 0, opcode = Opcodes.PUTFIELD))
+	@Redirect(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;calcification:I", ordinal = 0, opcode = Opcodes.PUTFIELD, remap = false), remap = false)
 	private void injectDisableCalcification(final TileEntitySteamGenerator instance, final int newValue)
 	{
 		if (enableCalcification)

@@ -35,7 +35,7 @@ public class MixinTileEntityLiquidHeatExchanger
 		return outputTankCapacity;
 	}
 
-	@ModifyConstant(method = "getMaxHeatEmittedPerTick", constant = @Constant(intValue = 10))
+	@ModifyConstant(method = "getMaxHeatEmittedPerTick", constant = @Constant(intValue = 10), remap = false)
 	public int injectHeatPerExchangerFix(final int _10)
 	{
 		return maxHeatExchangePerTick / heatexchangerslots.size();

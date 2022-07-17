@@ -16,13 +16,13 @@ public abstract class MixinEnergyCalculatorLeg
 	private static final boolean disableSyncSourceTierLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/energy/EnergyCalculator/disableSyncSourceTierLimit");
 	private static final boolean disableDistributeSourceTierLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/energy/EnergyCalculator/disableDistributeSourceTierLimit");
 
-	@Redirect(method = "runSyncStep(Lic2/core/energy/grid/EnergyNetLocal;)Z", at = @At(value = "INVOKE", target = "Lic2/api/energy/IEnergyNet;getPowerFromTier(I)D"))
+	@Redirect(method = "runSyncStep(Lic2/core/energy/grid/EnergyNetLocal;)Z", at = @At(value = "INVOKE", target = "Lic2/api/energy/IEnergyNet;getPowerFromTier(I)D", remap = false), remap = false)
 	private double injectDisableSyncSourceTierLimit(final IEnergyNet instance, final int tier)
 	{
 		return disableSyncSourceTierLimit ? Double.POSITIVE_INFINITY : instance.getPowerFromTier(tier);
 	}
 
-	@Redirect(method = "distributeMultiple", at = @At(value = "INVOKE", target = "Lic2/api/energy/IEnergyNet;getPowerFromTier(I)D"))
+	@Redirect(method = "distributeMultiple", at = @At(value = "INVOKE", target = "Lic2/api/energy/IEnergyNet;getPowerFromTier(I)D", remap = false), remap = false)
 	private static double injectDisableDistributeSourceTierLimit(final IEnergyNet instance, final int tier)
 	{
 		return disableDistributeSourceTierLimit ? Double.POSITIVE_INFINITY : instance.getPowerFromTier(tier);
