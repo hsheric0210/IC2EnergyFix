@@ -10,7 +10,7 @@ import ic2.core.WindSim;
 import ic2.core.util.ConfigUtil;
 
 @Mixin(WindSim.class)
-public abstract class MixinWindSim
+public class MixinWindSim
 {
 	private final double defaultMultiplier = ConfigUtil.getDouble(IC2EnergyFixConfig.get(), "balance/wind/defaultMultiplier");
 	private final double rainMultiplier = ConfigUtil.getDouble(IC2EnergyFixConfig.get(), "balance/wind/rainMultiplier");

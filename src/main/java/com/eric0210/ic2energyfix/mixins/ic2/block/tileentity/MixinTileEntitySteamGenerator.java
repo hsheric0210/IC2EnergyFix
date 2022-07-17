@@ -2,12 +2,10 @@ package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.*;
 
 import ic2.core.block.machine.tileentity.TileEntitySteamGenerator;
 import ic2.core.util.ConfigUtil;
@@ -15,37 +13,40 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntitySteamGenerator.class)
 public abstract class MixinTileEntitySteamGenerator
 {
-	private final int maxHeatupHU = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamGenerator/maxHeatupHU");
-	private final int baseHUNeed = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamGenerator/huNeedBase");
+	private final int baseHeatupHU = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamGenerator/baseHeatupHU");
+	private final int baseHUNeed = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/steamGenerator/baseHUNeed");
 	private final float huNeedRatio = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/steamGenerator/huNeedRatio");
 	private final float huNeedMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/steamGenerator/huNeedMultiplier");
+	private final boolean enableCalcification = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/steamGenerator/enableCalcification");
 
 	@Shadow(remap = false)
-	private int heatinput;
+	private int pressure;
 
 	@Shadow(remap = false)
-	private int pressurevalve;
+	private int calcification;
 
-	@Shadow(remap = false)
-	private int requestHeat(@SuppressWarnings("unused") final int requestHeat)
+	@ModifyConstant(method = "work", constant = @Constant(intValue = 1200), remap = false)
+	private int injectBaseHeatupHU(final int _1200)
 	{
-		return 0;
+		return baseHeatupHU;
 	}
 
-	@Shadow(remap = false)
-	private void heatup(@SuppressWarnings("unused") final int heatinput)
+	@ModifyVariable(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;systemHeat:F", ordinal = 0), name = "hUneeded", remap = false)
+	private float injectHUNeeded(@SuppressWarnings("unused") final float hUNeeded)
 	{
+		return baseHUNeed + pressure / huNeedRatio * huNeedMultiplier;
 	}
 
-	@ModifyConstant(method = "heatupmax", constant = @Constant(intValue = 1200), remap = false)
-	private int injectHeatupmax(final int _1200)
+	@ModifyVariable(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;systemHeat:F", ordinal = 0), name = "targetTemp", remap = false)
+	private float injectTargetTemp(@SuppressWarnings("unused") final float targetTemp)
 	{
-		return maxHeatupHU;
+		return baseHUNeed + pressure / huNeedRatio * huNeedMultiplier * 2.74F;
 	}
 
-	@ModifyVariable(method = "getOutputfluid", at = @At("HEAD"), name = "hu_need", ordinal = 0, remap = false)
-	private int injectGetOutputfluid(@SuppressWarnings("unused") final int hu_need_per_mb)
+	@Redirect(method = "work", at = @At(value = "FIELD", target = "Lic2/core/block/machine/tileentity/TileEntitySteamGenerator;calcification:I", ordinal = 0, opcode = Opcodes.PUTFIELD))
+	private void injectDisableCalcification(final TileEntitySteamGenerator instance, final int newValue)
 	{
-		return baseHUNeed + Math.round(pressurevalve / huNeedRatio * huNeedMultiplier);
+		if (enableCalcification)
+			calcification = newValue;
 	}
 }

@@ -36,7 +36,7 @@ targetCompatibility = 1.8
 
 // Set up forge options
 minecraft {
-	mappings channel: 'snapshot', version: "20180304-1.12"
+	mappings channel: 'snapshot', version: project.version_mcp
 	// replace '@VERSION@', project.version
 	runs {
 		client {

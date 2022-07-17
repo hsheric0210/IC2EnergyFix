@@ -13,20 +13,20 @@ import ic2.core.block.BlockFoam;
 import ic2.core.util.ConfigUtil;
 
 @Mixin(BlockFoam.class)
-public abstract class MixinBlockFoam
+public class MixinBlockFoam
 {
-	private final int chance = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/block/foam/constructChance");
-	private final int tickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/block/foam/tickRate");
+	private final float hardenChanceMultiplier = ConfigUtil.getFloat(IC2EnergyFixConfig.get(), "balance/block/foam/hardenChanceMultiplier");
+	private final int baseLightReverseMultiplier = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/block/foam/baseLightReverseMultiplier");
 
-	@ModifyConstant(method = "updateTick", constant = @Constant(intValue = 1000), remap = false)
-	private int injectRNG(final int _1000)
+	@ModifyConstant(method = "randomTick", constant = @Constant(floatValue = 4096.0F), remap = false)
+	private float injectHardenChanceMultiplier(final float _4096)
 	{
-		return chance;
+		return hardenChanceMultiplier;
 	}
 
-	@Inject(method = "tickRate", at = @At("HEAD"), cancellable = true, remap = false)
-	private void injectTickRate(final CallbackInfoReturnable<? super Integer> cir)
+	@ModifyConstant(method = "randomTick", constant = @Constant(intValue = 16), remap = false)
+	private int injectBaseLightReverseMultiplier(final int _16)
 	{
-		cir.setReturnValue(tickRate);
+		return baseLightReverseMultiplier;
 	}
 }

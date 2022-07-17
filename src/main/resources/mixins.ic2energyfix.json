@@ -21,10 +21,8 @@
     "ic2.block.tileentity.MixinTileEntityFluidBottler",
     "ic2.block.tileentity.MixinTileEntityGeoGenerator",
     "ic2.block.tileentity.MixinTileEntityIronFurnace",
-    "ic2.block.tileentity.MixinTileEntityKineticGenerator",
     "ic2.block.tileentity.MixinTileEntityLiquidHeatExchanger",
     "ic2.block.tileentity.MixinTileEntityLiquidTankElectricMachine",
-    "ic2.block.tileentity.MixinTileEntityLiquidTankInventory",
     "ic2.block.tileentity.MixinTileEntityMacerator",
     "ic2.block.tileentity.MixinTileEntityMatter",
     "ic2.block.tileentity.MixinTileEntityMetalFormer",
@@ -36,8 +34,7 @@
     "ic2.block.tileentity.MixinTileEntitySolarDestiller",
     "ic2.block.tileentity.MixinTileEntitySolidCanner",
     "ic2.block.tileentity.MixinTileEntitySteamGenerator",
-    "ic2.block.tileentity.MixinTileEntityStirlingGenerator",
-    "ic2.block.tileentity.MixinTileEntityCropHavester",
+    "ic2.block.tileentity.MixinTileEntityCropHarvester",
     "ic2.block.tileentity.MixinTileEntityCropmatron",
     "ic2.block.tileentity.MixinTileEntityInduction",
     "ic2.block.tileentity.MixinTileEntityCentrifuge",
@@ -53,9 +50,8 @@
     "ic2.item.MixinItemReactorHeatSwitch",
 
     "ic2.block.MixinBlockFoam",
-    "ic2.block.MixinBlockReinforcedFoam",
+    "ic2.block.MixinFoamType",
 
-    "minecraft.MixinTileEntity",
-    "ic2.block.MixinTileEntityInventory"
+    "minecraft.MixinTileEntity"
   ]
 }

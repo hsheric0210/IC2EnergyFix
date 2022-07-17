@@ -1,7 +1,6 @@
 package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
-import com.eric0210.ic2energyfix.mixins.ic2.block.MixinTileEntityInventory;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,7 +13,7 @@ import ic2.core.block.machine.tileentity.TileEntityIronFurnace;
 import ic2.core.util.ConfigUtil;
 
 @Mixin(TileEntityIronFurnace.class)
-public abstract class MixinTileEntityIronFurnace extends MixinTileEntityInventory
+public abstract class MixinTileEntityIronFurnace
 {
 	private final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/ironFurnaceOperationLength");
 

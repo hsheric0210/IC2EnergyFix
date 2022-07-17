@@ -1,12 +1,12 @@
 package com.eric0210.ic2energyfix.mixins.ic2.block.tileentity;
 
 import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
-import com.eric0210.ic2energyfix.utils.ReflectionHelper;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Slice;
 
 import ic2.core.block.machine.tileentity.TileEntityCondenser;
 import ic2.core.util.ConfigUtil;
@@ -17,10 +17,15 @@ public class MixinTileEntityCondenser
 	private final int passiveCooling = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/condenser/passiveCooling");
 	private final int activeCoolingPerVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/condenser/activeCoolingPerVent");
 
-	@Inject(method = "<init>", at = @At("RETURN"))
-	public void injectInit(@SuppressWarnings("unused") final CallbackInfo callback)
+	@ModifyConstant(method = "work", constant = @Constant(intValue = 100, ordinal = 0), slice = @Slice(from = @At(value = "INVOKE", target = "Lic2/core/block/machine/tileentity/TileEntityCondenser;getVents()B"), to = @At(value = "INVOKE", target = "Lic2/core/block/comp/Energy;useEnergy(D)Z")))
+	private int injectPassiveCooling(final int _100)
 	{
-		ReflectionHelper.tamperFinalField(getClass(), "passivecolling", this, passiveCooling > Short.MAX_VALUE ? Short.MAX_VALUE : (short) passiveCooling);
-		ReflectionHelper.tamperFinalField(getClass(), "activecollingperVent", this, activeCoolingPerVent > Short.MAX_VALUE ? Short.MAX_VALUE : (short) activeCoolingPerVent);
+		return passiveCooling;
+	}
+
+	@ModifyConstant(method = "work", constant = @Constant(intValue = 100, ordinal = 1), slice = @Slice(from = @At(value = "INVOKE", target = "Lic2/core/block/machine/tileentity/TileEntityCondenser;getVents()B"), to = @At(value = "INVOKE", target = "Lic2/core/block/comp/Energy;useEnergy(D)Z")))
+	private int injectActiveCooling(final int _100)
+	{
+		return activeCoolingPerVent;
 	}
 }

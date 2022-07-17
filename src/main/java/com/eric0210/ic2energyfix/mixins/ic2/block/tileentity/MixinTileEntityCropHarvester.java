@@ -10,15 +10,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import ic2.core.block.machine.tileentity.TileEntityCropmatron;
+import ic2.core.block.machine.tileentity.TileEntityCropHarvester;
 import ic2.core.util.ConfigUtil;
 
-@Mixin(TileEntityCropmatron.class)
-public class MixinTileEntityCropmatron
+@Mixin(TileEntityCropHarvester.class)
+public class MixinTileEntityCropHarvester
 {
-	private final int tickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropmatron/tickRate");
-	private final int horizontalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropmatron/horizontalRange");
-	private final int verticalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropmatron/verticalRange");
+	private final int tickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/tickRate");
+	private final int horizontalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/horizontalRange");
+	private final int verticalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/verticalRange");
 
 	@Shadow(remap = false)
 	public int scanX;
