@@ -1,98 +1,125 @@
 buildscript {
 	repositories {
 		mavenCentral()
+
 		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
+			url = 'http://files.minecraftforge.net/maven'
 		}
+
 		maven {
-			name = "sonatype"
-			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+			url = 'http://repo.spongepowered.org/maven'
 		}
+
 		maven {
-			url = "https://repo.spongepowered.org/maven"
+			url 'https://plugins.gradle.org/m2/'
 		}
 	}
+
 	dependencies {
-		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-		classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+		classpath "net.minecraftforge.gradle:ForgeGradle:4.+"
+		classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+	}
+}
+
+plugins {
+	id 'org.spongepowered.plugin' version '0.9.0'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
+
+version = "${mod_version}"
+group = "${mod_group}"
+archivesBaseName = "${mod_name}-${version_minecraft}"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+// Set up forge options
+minecraft {
+	mappings channel: 'snapshot', version: "20180304-1.12"
+	// replace '@VERSION@', project.version
+	runs {
+		client {
+			workingDirectory project.file('rundir')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+			mods {
+			}
+		}
+
+		server {
+			workingDirectory project.file('rundir')
+			property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+			property 'forge.logging.console.level', 'debug'
+			mods {
+			}
+		}
+	}
+}
+
+mixin {
+	add sourceSets.main, "mixins.ic2energyfix.refmap.json"
+}
+
+processResources {
+	inputs.property "version", project.version
+	inputs.property "mcversion", project.version_minecraft
+
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
+		expand 'version': project.version, 'mcversion': project.version_minecraft
+	}
+
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
 	}
 }
 
 configurations {
-	includeMod
+	// embed
 	shade
-	shadeClient
-	serverLib
-	buildDep
-	compile.extendsFrom buildDep, shade, shadeClient, serverLib
+	implementation.extendsFrom shade
 }
 
 repositories {
 	flatDir {
 		dirs 'lib'
 	}
+
 	maven {
 		name = "sponge"
 		url = "https://repo.spongepowered.org/maven/"
 	}
-}
 
-apply plugin: 'forge'
-
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-version = "1.11"
-group = "ic2energyfix"
-archivesBaseName = "ic2energyfix"
-
-sourceCompatibility = targetCompatibility = '1.8'
-compileJava {
-	sourceCompatibility = targetCompatibility = '1.8'
-}
-
-minecraft {
-	version = "1.7.10-10.13.4.1614-1.7.10"
-	runDir = "run"
+	maven {
+		name = "forge"
+		url = "https://files.minecraftforge.net/maven"
+	}
 }
 
 dependencies {
-	compile name: 'industrialcraft-2-2.2.828-experimental-dev'
+	minecraft "net.minecraftforge:forge:$project.version_minecraft-$project.version_forge"
+	compile name: 'industrialcraft-2-2.8.222-ex112-dev'
 
-	// Shade Mixin library
-	shade group: "org.spongepowered", name: "mixin", version: "0.6.15-SNAPSHOT", changing: true
-	shadeClient group: "org.spongepowered", name: "mixin", version: "0.6.15-SNAPSHOT", changing: true
-}
-
-// Configure server resource processing
-project.processResources {
-	from(sourceSets.main.resources.srcDirs) {
-		include "mcmod.info"
-		expand(
-				"version": project.version,
-				"mcversion": project.minecraft.version,
-		)
+	shade (group: "org.spongepowered", name: "mixin", version: "0.8.1-SNAPSHOT") {
+		exclude group: 'org.ow2.asm', module: 'asm-tree'
 	}
-}
 
-def refMap = "${tasks.compileJava.temporaryDir}" + File.separator + "mixins.ic2energyfix.refmap.json"
+	// embed("org.spongepowered:mixin:0.8-SNAPSHOT") { transitive = false }
+}
 
 jar {
-	from refMap
-	manifest {
-		attributes 'FMLCorePlugin': 'com.eric0210.ic2energyfix.IC2EnergyFix'
-		attributes 'FMLCorePluginContainsFMLMod': 'false'
-		attributes 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker'
-		attributes 'MixinConfigs': "mixins.ic2energyfix.json"
+	from(configurations.shade.collect { it.isDirectory() ? it : zipTree(it) }) {
+		exclude "LICENSE.txt", "META-INF/MANIFEST.MF", "META-INF/maven/**", "META-INF/*.RSA", "META-INF/*.SF"
 	}
 
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	configurations.shade.copyRecursive().setTransitive(false).each { artifact ->
-		from(zipTree(artifact))
-	}
+	manifest.attributes(
+			"FMLCorePluginContainsFMLMod": "true",
+			"ForceLoadAsMod": "true",
+			"TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+			"MixinConfigs": "mixins.surge.json",
+			"FMLCorePlugin": "com.eric0210.ic2energyfix.IC2EnergyFix"
+	)
 }
 
-def mixinSrg = "${tasks.reobf.temporaryDir}" + File.separator + "mixins.srg"
-afterEvaluate {
-	tasks.compileJava.options.compilerArgs += ["-AreobfSrgFile=${tasks.reobf.srg}", "-AoutSrgFile=${mixinSrg}", "-AoutRefMapFile=${refMap}"]
-}
+// build.dependsOn reobfJar
