@@ -15,10 +15,10 @@ import ic2.core.block.generator.tileentity.TileEntitySemifluidGenerator;
 import ic2.core.util.ConfigUtil;
 
 @Mixin(TileEntitySemifluidGenerator.class)
-public abstract class MixinTileEntitySemifluidGenerator extends MixinTileEntityBaseGenerator
+public abstract class MixinTileEntitySemifluidGenerator
 {
-	private static final int energyCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semifluid/energyCapacity");
-	private static final int fluidTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semifluid/fluidTankCapacity");
+	private static final int newEnergyCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semiFluid/energyCapacity");
+	private static final int newFluidTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semiFluid/fluidTankCapacity");
 
 	@Shadow(remap = false)
 	public static void addFuel(final String fluidName, final long energyPerMb, final long energyPerTick)
@@ -27,24 +27,24 @@ public abstract class MixinTileEntitySemifluidGenerator extends MixinTileEntityB
 
 	private static int getEnergyPerMb(final String fluidName)
 	{
-		return ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semifluid/" + fluidName + "/energyPerMb");
+		return ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semiFluid/" + fluidName + "/energyPerMb");
 	}
 
 	private static int getEnergyPerTick(final String fluidName)
 	{
-		return ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semifluid/" + fluidName + "/energyPerTick");
+		return ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generator/semiFluid/" + fluidName + "/energyPerTick");
 	}
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 32000))
 	private static int injectEnergyCapacity(final int _32000)
 	{
-		return energyCapacity;
+		return newEnergyCapacity;
 	}
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 10000))
 	private static int injectTankCapacity(final int _10000)
 	{
-		return fluidTankCapacity;
+		return newFluidTankCapacity;
 	}
 
 	@Redirect(method = "init", at = @At(value = "INVOKE", target = "Lic2/core/block/generator/tileentity/TileEntitySemifluidGenerator;addFuel(Ljava/lang/String;JJ)V", remap = false), remap = false)

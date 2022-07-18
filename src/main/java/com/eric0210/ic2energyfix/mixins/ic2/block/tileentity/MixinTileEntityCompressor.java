@@ -12,11 +12,11 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityCompressor.class)
 public class MixinTileEntityCompressor
 {
-	private static final int operationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/compressorOperationLength");
+	private static final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/compressorOperationLength");
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 300))
 	private static int injectOperationLength(final int _300)
 	{
-		return operationLength;
+		return newOperationLength;
 	}
 }

@@ -13,8 +13,8 @@ import ic2.core.util.ConfigUtil;
 @Mixin(EnergyCalculatorLeg.class)
 public abstract class MixinEnergyCalculatorLeg
 {
-	private static final boolean disableSyncSourceTierLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/energy/EnergyCalculator/disableSyncSourceTierLimit");
-	private static final boolean disableDistributeSourceTierLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/energy/EnergyCalculator/disableDistributeSourceTierLimit");
+	private static final boolean disableSyncSourceTierLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/energy/energyCalculator/disableSyncSourceTierLimit");
+	private static final boolean disableDistributeSourceTierLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/energy/energyCalculator/disableDistributeSourceTierLimit");
 
 	@Redirect(method = "runSyncStep(Lic2/core/energy/grid/EnergyNetLocal;)Z", at = @At(value = "INVOKE", target = "Lic2/api/energy/IEnergyNet;getPowerFromTier(I)D", remap = false), remap = false)
 	private double injectDisableSyncSourceTierLimit(final IEnergyNet instance, final int tier)

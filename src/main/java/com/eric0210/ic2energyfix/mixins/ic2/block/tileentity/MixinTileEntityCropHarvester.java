@@ -16,9 +16,9 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityCropHarvester.class)
 public class MixinTileEntityCropHarvester
 {
-	private final int tickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/tickRate");
-	private final int horizontalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/horizontalRange");
-	private final int verticalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/verticalRange");
+	private final int newTickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/tickRate");
+	private final int newHorizontalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/horizontalRange");
+	private final int newVerticalRange = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/cropHarvester/verticalRange");
 
 	@Shadow(remap = false)
 	public int scanX;
@@ -32,37 +32,37 @@ public class MixinTileEntityCropHarvester
 	@Inject(method = "<init>", at = @At("RETURN"), remap = false)
 	public void injectInit(final CallbackInfo ci)
 	{
-		scanX = scanZ = -horizontalRange;
-		scanY = -verticalRange;
+		scanX = scanZ = -newHorizontalRange;
+		scanY = -newVerticalRange;
 	}
 
 	@ModifyConstant(method = "updateEntityServer", constant = @Constant(longValue = 10L), remap = false)
 	private long injectTickRate(final long _10L)
 	{
-		return tickRate;
+		return newTickRate;
 	}
 
 	@ModifyConstant(method = "scan", constant = @Constant(intValue = -4), remap = false)
 	public int injectScanHStart(final int _4)
 	{
-		return -horizontalRange;
+		return -newHorizontalRange;
 	}
 
 	@ModifyConstant(method = "scan", constant = @Constant(intValue = 4), remap = false)
 	public int injectScanHEnd(final int _4)
 	{
-		return horizontalRange;
+		return newHorizontalRange;
 	}
 
 	@ModifyConstant(method = "scan", constant = @Constant(intValue = -1, ordinal = 0), remap = false)
 	public int injectScanVStart(final int _1)
 	{
-		return -verticalRange;
+		return -newVerticalRange;
 	}
 
 	@ModifyConstant(method = "scan", constant = @Constant(intValue = 1, ordinal = 0), remap = false)
 	public int injectScanVEnd(final int _1)
 	{
-		return verticalRange;
+		return newVerticalRange;
 	}
 }

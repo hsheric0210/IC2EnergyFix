@@ -12,11 +12,11 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityFluidBottler.class)
 public class MixinTileEntityFluidBottler
 {
-	private static final int operationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/fluidBottlerOperationLength");
+	private static final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/fluidBottlerOperationLength");
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 100))
 	private static int injectOperationLength(final int _100)
 	{
-		return operationLength;
+		return newOperationLength;
 	}
 }

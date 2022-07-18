@@ -12,11 +12,11 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityExtractor.class)
 public class MixinTileEntityExtractor
 {
-	private static final int operationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/extractorOperationLength");
+	private static final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/generic/extractorOperationLength");
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 300))
 	private static int injectOperationLength(final int _300)
 	{
-		return operationLength;
+		return newOperationLength;
 	}
 }

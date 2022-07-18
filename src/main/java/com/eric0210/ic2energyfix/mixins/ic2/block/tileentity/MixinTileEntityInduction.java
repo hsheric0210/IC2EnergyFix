@@ -11,17 +11,17 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityInduction.class)
 public class MixinTileEntityInduction
 {
-	private final int operationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/induction/operationLength");
+	private final int newOperationLength = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/induction/operationLength");
 
 	@ModifyConstant(method = "gaugeProgressScaled", constant = @Constant(intValue = 4000), remap = false)
 	public int injectGaugeProgressScaled(final int _4000)
 	{
-		return operationLength;
+		return newOperationLength;
 	}
 
 	@ModifyConstant(method = "updateEntityServer", constant = @Constant(intValue = 4000), slice = @Slice(from = @At(value = "INVOKE", target = "Lic2/core/block/machine/tileentity/TileEntityInduction;getActive()Z", ordinal = 0), to = @At(value = "INVOKE", target = "Lic2/core/block/machine/tileentity/TileEntityInduction;canOperate()Z", ordinal = 0)), remap = false)
 	public int injectNewOperationLength(final int _4000)
 	{
-		return operationLength;
+		return newOperationLength;
 	}
 }

@@ -4,8 +4,7 @@ import com.eric0210.ic2energyfix.IC2EnergyFixConfig;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import ic2.core.item.reactor.ItemReactorVent;
 import ic2.core.ref.ItemName;
@@ -16,32 +15,93 @@ public class MixinItemReactorVent
 {
 	private static final int heatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/heatStorage");
 	private static final int heatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/selfVent");
-	private static final int heatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/heatVent");
+	private static final int heatVentReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/heatVent/reactorVent");
 
 	private static final int reactorHeatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/heatStorage");
 	private static final int reactorHeatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/selfVent");
-	private static final int reactorHeatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/heatVent");
+	private static final int reactorHeatVentReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/reactorHeatVent/reactorVent");
 
 	private static final int overclockedHeatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/heatStorage");
 	private static final int overclockedHeatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/selfVent");
-	private static final int overclockedHeatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/heatVent");
+	private static final int overclockedHeatVentReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/overclockedHeatVent/reactorVent");
 
 	private static final int advancedHeatVentHeatStorage = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/heatStorage");
 	private static final int advancedHeatVentSelfVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/selfVent");
-	private static final int advancedHeatVentheatVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/heatVent");
+	private static final int advancedHeatVentReactorVent = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/reactor/advancedHeatVent/reactorVent");
 
-	@ModifyArgs(method = "<init>", at = @At("HEAD"), remap = false)
-	private static void injectArguments(final Args args)
+
+	private static ItemName Name;
+
+	@ModifyVariable(method = "<init>", at = @At("HEAD"), ordinal = 0, argsOnly = true, remap = false)
+	private static ItemName injectHeatStorage(final ItemName internalName)
 	{
-		final String internalName = String.valueOf(args.get(0));
+		Name = internalName;
+		return internalName;
+	}
 
-		if (internalName.equalsIgnoreCase(ItemName.heat_vent.name()))
-			args.setAll(internalName, heatVentHeatStorage, heatVentSelfVent, heatVentheatVent);
-		else if (internalName.equalsIgnoreCase(ItemName.reactor_heat_vent.name()))
-			args.setAll(internalName, reactorHeatVentHeatStorage, reactorHeatVentSelfVent, reactorHeatVentheatVent);
-		else if (internalName.equalsIgnoreCase(ItemName.overclocked_heat_vent.name()))
-			args.setAll(internalName, overclockedHeatVentHeatStorage, overclockedHeatVentSelfVent, overclockedHeatVentheatVent);
-		else if (internalName.equalsIgnoreCase(ItemName.advanced_heat_vent.name()))
-			args.setAll(internalName, advancedHeatVentHeatStorage, advancedHeatVentSelfVent, advancedHeatVentheatVent);
+	@ModifyVariable(method = "<init>", at = @At("HEAD"), ordinal = 0, argsOnly = true, remap = false)
+	private static int injectHeatStorage(final int heatStorage)
+	{
+		switch (Name)
+		{
+			case heat_vent:
+				return heatVentHeatStorage;
+
+			case reactor_heat_vent:
+				return reactorHeatVentHeatStorage;
+
+			case overclocked_heat_vent:
+				return overclockedHeatVentHeatStorage;
+
+			case advanced_heat_vent:
+				return advancedHeatVentHeatStorage;
+
+			default:
+				return heatStorage;
+		}
+	}
+
+	@ModifyVariable(method = "<init>", at = @At("HEAD"), ordinal = 1, argsOnly = true, remap = false)
+	private static int injectSelfVent(final int selfVent)
+	{
+		switch (Name)
+		{
+			case heat_vent:
+				return heatVentSelfVent;
+
+			case reactor_heat_vent:
+				return reactorHeatVentSelfVent;
+
+			case overclocked_heat_vent:
+				return overclockedHeatVentSelfVent;
+
+			case advanced_heat_vent:
+				return advancedHeatVentSelfVent;
+
+			default:
+				return selfVent;
+		}
+	}
+
+	@ModifyVariable(method = "<init>", at = @At("HEAD"), ordinal = 2, argsOnly = true, remap = false)
+	private static int injectReactorVent(final int heatVent)
+	{
+		switch (Name)
+		{
+			case heat_vent:
+				return heatVentReactorVent;
+
+			case reactor_heat_vent:
+				return reactorHeatVentReactorVent;
+
+			case overclocked_heat_vent:
+				return overclockedHeatVentReactorVent;
+
+			case advanced_heat_vent:
+				return advancedHeatVentReactorVent;
+
+			default:
+				return heatVent;
+		}
 	}
 }

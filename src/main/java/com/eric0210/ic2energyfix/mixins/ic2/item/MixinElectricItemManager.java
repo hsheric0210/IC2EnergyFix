@@ -15,13 +15,13 @@ public class MixinElectricItemManager
 	private final boolean ignoreChargeTransferLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/electricItem/ignoreChargeTransferLimit");
 	private final boolean ignoreDischargeTransferLimit = ConfigUtil.getBool(IC2EnergyFixConfig.get(), "balance/electricItem/ignoreDischargeTransferLimit");
 
-	@ModifyVariable(method = "charge", at = @At("HEAD"), ordinal = 0, remap = false)
+	@ModifyVariable(method = "charge", at = @At("HEAD"), ordinal = 0, argsOnly = true, remap = false)
 	public boolean injectChargeTransferLimit(final boolean ignoreTransferLimit)
 	{
 		return ignoreTransferLimit || ignoreChargeTransferLimit;
 	}
 
-	@ModifyVariable(method = "discharge", at = @At("HEAD"), ordinal = 0, remap = false)
+	@ModifyVariable(method = "discharge", at = @At("HEAD"), ordinal = 0, argsOnly = true, remap = false)
 	public boolean injectDischargeTransferLimit(final boolean ignoreTransferLimit)
 	{
 		return ignoreTransferLimit || ignoreDischargeTransferLimit;

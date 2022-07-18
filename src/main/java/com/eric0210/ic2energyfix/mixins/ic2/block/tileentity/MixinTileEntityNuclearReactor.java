@@ -17,7 +17,7 @@ public abstract class MixinTileEntityNuclearReactor
 {
 	private final int inputTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/nuclearReactor/inputTankCapacity");
 	private final int outputTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/nuclearReactor/outputTankCapacity");
-	private final int tickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/nuclearReactor/tickRate");
+	private final int newTickRate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/nuclearReactor/tickRate");
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 10000, ordinal = 0))
 	public int injectInputTankCapacity(final int _10000)
@@ -34,6 +34,6 @@ public abstract class MixinTileEntityNuclearReactor
 	@Inject(method = "getTickRate", at = @At("HEAD"), cancellable = true, remap = false)
 	public void injectGetTickRate(final CallbackInfoReturnable<? super Integer> callback)
 	{
-		callback.setReturnValue(tickRate);
+		callback.setReturnValue(newTickRate);
 	}
 }

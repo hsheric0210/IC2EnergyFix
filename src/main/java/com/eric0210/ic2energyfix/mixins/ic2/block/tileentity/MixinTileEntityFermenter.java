@@ -12,25 +12,25 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntityFermenter.class)
 public class MixinTileEntityFermenter
 {
-	private final int heatRequest = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/fermenter/heatRequest");
-	private final int inputTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/fermenter/inputTankCapacity");
-	private final int outputTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/fermenter/outputTankCapacity");
+	private final int newHeatRequest = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/fermenter/heatRequest");
+	private final int newInputTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/fermenter/inputTankCapacity");
+	private final int newOutputTankCapacity = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/fermenter/outputTankCapacity");
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 10000))
 	public int injectInputTankCapacity(final int _10000)
 	{
-		return inputTankCapacity;
+		return newInputTankCapacity;
 	}
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 2000))
 	public int injectOutputTankCapacity(final int _2000)
 	{
-		return outputTankCapacity;
+		return newOutputTankCapacity;
 	}
 
 	@ModifyConstant(method = "work", constant = @Constant(intValue = 100), remap = false)
 	private int injectHeatRequest(final int _100)
 	{
-		return heatRequest;
+		return newHeatRequest;
 	}
 }
