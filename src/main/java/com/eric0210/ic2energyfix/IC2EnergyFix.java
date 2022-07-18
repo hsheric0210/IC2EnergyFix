@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.minecraftforge.fml.relauncher.libraries.LibraryManager;
+import net.minecraftforge.fml.relauncher.libraries.ModList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,6 +61,7 @@ public class IC2EnergyFix implements IFMLLoadingPlugin
             for (final URL url : urlList)
 			{
 				classLoader.addURL(url);
+				classLoader.getSources().remove(url); // Remove from 'sources' to prevent further problems
 				logger.info("Added industrialcraft 2 mod jar to classpath: {}", url);
 			}
             return true;
@@ -101,6 +103,20 @@ public class IC2EnergyFix implements IFMLLoadingPlugin
 					logger.error(MessageFormat.format("Can''t convert {0} to URL", modFile.getAbsolutePath()), e);
 				}
 			}
+
+		// Clear the MEMORY to prevent further problems
+		try
+		{
+			final Field cacheField = ModList.class.getDeclaredField("cache");
+			cacheField.setAccessible(true);
+			final Map<String, ModList> cache = (Map<String, ModList>) cacheField.get(null);
+			cache.remove("MEMORY");
+		}
+		catch (final NoSuchFieldException | IllegalAccessException e)
+		{
+			logger.error("Failed to access/read 'ModList.cache'", e);
+			return urlList;
+		}
 
 		return urlList;
     }
