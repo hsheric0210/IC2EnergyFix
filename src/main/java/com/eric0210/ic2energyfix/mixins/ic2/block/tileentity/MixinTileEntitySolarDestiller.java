@@ -12,9 +12,16 @@ import ic2.core.util.ConfigUtil;
 @Mixin(TileEntitySolarDestiller.class)
 public class MixinTileEntitySolarDestiller
 {
+	private final int processUnit = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solarDestiller/processUnit");
 	private final int hotTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solarDestiller/hotBiomeTickrate");
 	private final int coldTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solarDestiller/coldBiomeTickrate");
 	private final int defaultTickrate = ConfigUtil.getInt(IC2EnergyFixConfig.get(), "balance/solarDestiller/defaultTickrate");
+
+	@ModifyConstant(method = "updateEntityServer", constant = @Constant(intValue = 1), remap = false)
+	private int injectProcessingUnit(final int _1)
+	{
+		return processUnit;
+	}
 
 	@ModifyConstant(method = "getTickRate", constant = @Constant(intValue = 36), remap = false)
 	private int injectHotBiomeTickRate(final int _36)
