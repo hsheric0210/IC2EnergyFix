@@ -7,7 +7,10 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.CoreModManager;
@@ -36,7 +39,7 @@ public class IC2EnergyFix implements IFMLLoadingPlugin
 
         // HACK: Add IC2 to classpath
         // Industrialcraft2 is no longer coremod since Minecraft version 1.12
-        // Thus they're aren't loaded before IC2EnergyFix loaded, leading the injection into failure.
+        // Thus they're aren't loaded before IC2EnergyFix loaded, leading the mixin injection into failure.
         // To solve this, we must load the IC2 jar at the classloader
         addIC2ToClassPath();
 
@@ -90,10 +93,11 @@ public class IC2EnergyFix implements IFMLLoadingPlugin
         }
 
         final List<File> modList = LibraryManager.gatherLegacyCanidates(minecraftDir);
+		final Predicate<String> ic2ModFilePredicate = (String name) -> Stream.of("industrialcraft-2", "industrialcraft2", "ic2", "extrautils", "xu").anyMatch(prefix -> name.toLowerCase(Locale.ROOT).startsWith(prefix));
 		for (final File modFile : modList)
-			if (modFile.getName().startsWith("industrialcraft-2"))
+			if (ic2ModFilePredicate.test(modFile.getName()))
 			{
-				logger.info("Found industrialcraft 2 mod jar: {}", modFile.getAbsolutePath());
+				logger.info("Found mod file needed to be injected to classpath: {}", modFile.getAbsolutePath());
 				try
 				{
 					urlList.add(modFile.toURI().toURL());

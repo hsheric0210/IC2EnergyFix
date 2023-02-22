@@ -46,6 +46,7 @@
     "ic2.item.MixinItemReactorVentSpread",
     "ic2.item.MixinItemToolMiningLaser",
     "ic2.item.MixinItemUpgradeModule",
-    "minecraft.MixinTileEntity"
+    "minecraft.MixinTileEntity",
+    "xu2.transfernodes.MixinTransferNodeBase"
   ]
 }

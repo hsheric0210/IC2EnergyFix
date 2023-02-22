@@ -100,6 +100,7 @@ repositories {
 dependencies {
 	minecraft "net.minecraftforge:forge:$project.version_minecraft-$project.version_forge"
 	compile name: 'industrialcraft-2-2.8.222-ex112-dev'
+	compile name: 'extrautils2-1.12-1.9.9'
 
 	annotationProcessor 'org.spongepowered:mixin:0.8.1-SNAPSHOT:processor'
 
